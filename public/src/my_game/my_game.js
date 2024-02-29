@@ -1,6 +1,7 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 import engine from "../engine/index.js";
+import KeyFramer from "../engine/utils/key_framer.js";
 
 class MyGame extends engine.Scene {
     constructor() {
@@ -8,6 +9,9 @@ class MyGame extends engine.Scene {
 
         // The camera to view the scene
         this.mCamera = null;
+
+        // declaration of keyframer reference
+        this.mKeyFramer;
     }
         
     init() {
@@ -20,6 +24,9 @@ class MyGame extends engine.Scene {
 
         // sets the background to gray
         this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
+
+        // initialization of keyframer object
+        this.mKeyFramer = new KeyFramer();
     }
     
     // This is the draw function, make sure to setup proper drawing environment, and more
