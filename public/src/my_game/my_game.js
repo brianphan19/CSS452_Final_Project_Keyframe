@@ -37,6 +37,8 @@ class MyGame extends engine.Scene {
         this.mBox.getXform().setSize(5,5);
         this.mBox.getXform().setPosition(0, 0);
 
+        this.moveSpeed = 1;
+
         // initialization of keyframer object
         this.mKeyFramer = new KeyFramer();
 
@@ -47,13 +49,10 @@ class MyGame extends engine.Scene {
         this.animation = this.mKeyFramer.newAnimation(this.mBox);
 
         // create new frame
-        this.animation.addFrame(this.mBox);
-
-        // move box
-        this.mBox.getXform().setPosition(50,50);
+        // this.animation.addFrame(this.mBox);
 
         // add frame with new box coordinates
-        this.animation.addFrame(this.mBox);
+        // this.animation.addFrame(this.mBox);
 
         // animation player
         this.player = new AnimationPlayer()
@@ -77,6 +76,64 @@ class MyGame extends engine.Scene {
     // anything from this function!
     update () {
         this.player.update(this.animation);
+        if (engine.input.isKeyClicked(engine.input.keys.Space)) {
+            this.animation.addFrame(this.mBox);
+        }
+
+        if (engine.input.isKeyPressed(engine.input.keys.Up)) {
+            this.mBox.getXform().incYPosBy(this.moveSpeed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.Down)) {
+            this.mBox.getXform().incYPosBy(-this.moveSpeed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.Right)) {
+            this.mBox.getXform().incXPosBy(this.moveSpeed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.Left)) {
+            this.mBox.getXform().incXPosBy(-this.moveSpeed);
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.P)) {
+            this.player.pause();
+        }
+
+        if (engine.input.isKeyClicked(engine.input.keys.R)) {
+            this.player.resume();
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.I)) {
+            console.log(this.player.rate);
+            this.player.changeRate(0.01);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.U)) {
+            console.log(this.player.rate);
+            this.player.changeRate(-0.01);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.K)) {
+            console.log(this.player.cycles);
+            this.player.changeCycles(1);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.J)) {
+            console.log(this.player.cycles);
+            this.player.changeCycles(-1);
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.Zero)) {
+            this.player.skipToFrame(0);
+        }
+
+        if (engine.input.isKeyClicked(engine.input.keys.One)) {
+            this.player.skipToFrame(1);
+        }
+
+        if (engine.input.isKeyClicked(engine.input.keys.Two)) {
+            this.player.skipToFrame(2);
+        }
+
+        if (engine.input.isKeyClicked(engine.input.keys.Three)) {
+            this.player.skipToFrame(3);
+        }
+
+        if (engine.input.isKeyClicked(engine.input.keys.Four)) {
+            this.player.skipToFrame(4);
+        }
     }
 }
 

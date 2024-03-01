@@ -13,6 +13,8 @@ class AnimationPlayer {
     this.cycles = 120;
     // speed of interpolator
     this.rate = .05;
+    // should the animation be playing
+    this.isPlaying = false;
 
     // initialized by play animation
     // tells use which frame is being interpolated
@@ -30,6 +32,9 @@ class AnimationPlayer {
   // grab data from animation class
   // start interpolation
   playAnimation(animation) {
+    // swap is playing to true
+    this.isPlaying = true;
+
     // get frame list
     this.frames = animation.getFrames();
 
@@ -47,14 +52,13 @@ class AnimationPlayer {
   }
 
   update(animation){
-    // if frame index is not null then the animation has started
-    if( this.frameIndex != null ){
+    // if the animation is meant to be played
+    if( this.isPlaying ){
       // if there are remaining cycles
       if( this.interpolateX.mCyclesLeft != 0 ) {
         // get updated interpolated values
         this.interpolateX.update();
         this.interpolateY.update();
-        console.log(this.interpolateX.get());
 
         // update renderables x and y position
         animation.mRenderable.getXform().setXPos(this.interpolateX.get());
@@ -67,6 +71,8 @@ class AnimationPlayer {
       // if true is returned we can move to another frame
       return this.moveToNextFrame(animation);
     }
+
+    return false;
   }
 
   // increments frame index
@@ -90,6 +96,34 @@ class AnimationPlayer {
     this.interpolateY.setFinal(frame.getYPos());
     // increment frame index
     this.frameIndex++;
+  }
+
+  pause(){
+    this.isPlaying = false;
+    return this.isPlaying;
+  }
+
+  resume(){
+    if( this.frameIndex != null ) this.isPlaying = true;
+    return this.isPlaying;
+  }
+
+  skipToFrame(frameIndex){
+    if (this.frames.length > frameIndex) {
+      this.frameIndex = frameIndex;
+      return true;
+    }
+    return false;
+  }
+  changeRate(int){
+    this.rate += int;
+    this.interpolateX = new Lerp(this.currXPos, this.cycles, this.rate);
+    this.interpolateY = new Lerp(this.currYPos, this.cycles, this.rate);
+  }
+  changeCycles(int){
+    this.cycles += int;
+    this.interpolateX = new Lerp(this.currXPos, this.cycles, this.rate);
+    this.interpolateY = new Lerp(this.currYPos, this.cycles, this.rate);
   }
 }
 
