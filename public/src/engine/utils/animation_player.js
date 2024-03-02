@@ -18,7 +18,7 @@ class AnimationPlayer {
 
     // initialized by play animation
     // tells use which frame is being interpolated
-    this.frameIndex = null;
+    this.frameIndex = 0;
     // list of all frames in the animation
     this.frames = [];
     // current position of renderable
@@ -33,7 +33,7 @@ class AnimationPlayer {
   // start interpolation
   playAnimation(animation) {
     // swap is playing to true
-    this.isPlaying = true;
+    this.isPlaying = false;
 
     // get frame list
     this.frames = animation.getFrames();
@@ -53,38 +53,27 @@ class AnimationPlayer {
 
   update(animation){
     // if the animation is meant to be played
-    if( this.isPlaying ){
-      // if there are remaining cycles
-      if( this.interpolateX.mCyclesLeft != 0 ) {
-        // get updated interpolated values
-        this.interpolateX.update();
-        this.interpolateY.update();
+    if( !this.isPlaying ) return false;
 
-        // update renderables x and y position
-        animation.mRenderable.getXform().setXPos(this.interpolateX.get());
-        animation.mRenderable.getXform().setYPos(this.interpolateY.get());
+    // if there are no remaining cycles, we move to another frame
+    // if true is returned we can move to another frame
+    if( this.interpolateX.mCyclesLeft == 0 ) return this.moveToNextFrame(animation);
 
-        return true;
-      }
+    // get updated interpolated values
+    this.interpolateX.update();
+    this.interpolateY.update();
 
-      // no remaining cycles move to the next frame
-      // if true is returned we can move to another frame
-      return this.moveToNextFrame(animation);
-    }
+    // update renderables x and y position
+    animation.mRenderable.getXform().setXPos(this.interpolateX.get());
+    animation.mRenderable.getXform().setYPos(this.interpolateY.get());
 
-    return false;
+    return true;   
   }
 
   // increments frame index
   moveToNextFrame(animation){
      // if there are no frames to be played return false
     if( this.frames.length == 0 ) return false;
-    
-    // if index is null then we are on the first frame
-    if( this.frameIndex == null ){
-      // set frame index
-      this.frameIndex = 0;
-    }
 
     // if the index is out of bounds there are no more frames
     if(this.frameIndex >= this.frames.length) this.frameIndex = 0;
@@ -94,6 +83,7 @@ class AnimationPlayer {
 
     this.interpolateX.setFinal(frame.getXPos());
     this.interpolateY.setFinal(frame.getYPos());
+
     // increment frame index
     this.frameIndex++;
     return true;
@@ -105,7 +95,7 @@ class AnimationPlayer {
   }
 
   resume(){
-    if( this.frameIndex != null ) this.isPlaying = true;
+    this.isPlaying = true;
     return this.isPlaying;
   }
 

@@ -38,9 +38,12 @@ class MyGame extends engine.Scene {
         this.mBox.getXform().setSize(5,5);
         this.mBox.getXform().setPosition(0, 0);
 
-        this.mMsg = new engine.FontRenderable("Status: DyePacks(" + this.dyePacks.length + ")");
+        this.frameIndex = 0;
+        this.interpolationSpd = 0.05;
+        this.interpolationCycles = 120;
+        this.mMsg = new engine.FontRenderable("Status: Frame Index(" + this.frameIndex + ")   Rate(" + this.interpolationSpd.toFixed(2) + ")   Cycle(" + this.interpolationCycles + ")");
         this.mMsg.setColor([1, 1, 1, 1]);
-        this.mMsg.getXform().setPosition(3, 4);
+        this.mMsg.getXform().setPosition(-18,-8);
         this.mMsg.setTextHeight(3);
 
         this.moveSpeed = 1;
@@ -53,7 +56,7 @@ class MyGame extends engine.Scene {
 
         // create new animation
         this.animation = this.mKeyFramer.newAnimation(this.mBox);
-        this.frameIndex = 0;
+        
 
         // create new frame
         // this.animation.addFrame(this.mBox);
@@ -66,6 +69,7 @@ class MyGame extends engine.Scene {
 
         // start animation
         this.player.playAnimation(this.animation);
+        
     }
     
     // This is the draw function, make sure to setup proper drawing environment, and more
@@ -100,16 +104,83 @@ class MyGame extends engine.Scene {
         this.changeInterpolateSpeed(0.01);
 
         //frame interpolation cycle
+        this.changeInterpolateCycles(1);
+
+        //go to frame number
+        this.goToFrameNumber();
+        this.statusMessage();
+    }
+w
+    objectMovement() {
+        this.objectMovementArrow();
+        this.objectMovementKeyBoard();
+    }
+
+    objectMovementArrow() {
+        if (engine.input.isKeyPressed(engine.input.keys.Up)) {
+            this.mBox.getXform().incYPosBy(this.moveSpeed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.Down)) {
+            this.mBox.getXform().incYPosBy(-this.moveSpeed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.Right)) {
+            this.mBox.getXform().incXPosBy(this.moveSpeed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.Left)) {
+            this.mBox.getXform().incXPosBy(-this.moveSpeed);
+        }
+    }
+
+    objectMovementKeyBoard() {
+        if (engine.input.isKeyPressed(engine.input.keys.W)) {
+            this.mBox.getXform().incYPosBy(this.moveSpeed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.S)) {
+            this.mBox.getXform().incYPosBy(-this.moveSpeed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.D)) {
+            this.mBox.getXform().incXPosBy(this.moveSpeed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.A)) {
+            this.mBox.getXform().incXPosBy(-this.moveSpeed);
+        }
+    }
+
+    changeInterpolateSpeed(deltaSpeed) {
+        if (engine.input.isKeyPressed(engine.input.keys.I)) {
+            console.log(this.player.rate);
+            this.player.changeRate(deltaSpeed);
+            this.interpolationSpd += deltaSpeed;
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.U)) {
+            console.log(this.player.rate);
+            this.player.changeRate(-deltaSpeed);
+            this.interpolationSpd -= deltaSpeed;
+        }
+    }
+    
+    changeInterpolateCycles(deltaCycles) {
         if (engine.input.isKeyPressed(engine.input.keys.K)) {
             console.log(this.player.cycles);
-            this.player.changeCycles(1);
+            this.player.changeCycles(deltaCycles);
+            this.interpolationCycles += deltaCycles;
         }
         if (engine.input.isKeyPressed(engine.input.keys.J)) {
             console.log(this.player.cycles);
-            this.player.changeCycles(-1);
+            this.player.changeCycles(-deltaCycles);
+            this.interpolationCycles -= deltaCycles;
         }
+    }
+    addNewFrame() {
+        if (engine.input.isKeyClicked(engine.input.keys.Space)) {
+            this.animation.addFrame(this.mBox, this.frameIndex++);
+        }
+    }
+    statusMessage() {
+        this.mMsg.setText("Status: Frame Index(" + this.frameIndex + ")   Rate(" + this.interpolationSpd.toFixed(2) + ")   Cycle(" + this.interpolationCycles + ")");
+    }
 
-        //go to frame number
+    goToFrameNumber() {
         if (engine.input.isKeyClicked(engine.input.keys.Zero)) {
             this.player.skipToFrame(0);
         }
@@ -129,41 +200,6 @@ class MyGame extends engine.Scene {
         if (engine.input.isKeyClicked(engine.input.keys.Four)) {
             this.player.skipToFrame(4);
         }
-    }
-
-    objectMovement() {
-        if (engine.input.isKeyPressed(engine.input.keys.Up)) {
-            this.mBox.getXform().incYPosBy(this.moveSpeed);
-        }
-        if (engine.input.isKeyPressed(engine.input.keys.Down)) {
-            this.mBox.getXform().incYPosBy(-this.moveSpeed);
-        }
-        if (engine.input.isKeyPressed(engine.input.keys.Right)) {
-            this.mBox.getXform().incXPosBy(this.moveSpeed);
-        }
-        if (engine.input.isKeyPressed(engine.input.keys.Left)) {
-            this.mBox.getXform().incXPosBy(-this.moveSpeed);
-        }
-    }
-
-    changeInterpolateSpeed(speed) {
-        if (engine.input.isKeyPressed(engine.input.keys.I)) {
-            console.log(this.player.rate);
-            this.player.changeRate(speed);
-        }
-        if (engine.input.isKeyPressed(engine.input.keys.U)) {
-            console.log(this.player.rate);
-            this.player.changeRate(-speed);
-        }
-    }
-
-    addNewFrame() {
-        if (engine.input.isKeyClicked(engine.input.keys.Space)) {
-            this.animation.addFrame(this.mBox, this.frameIndex++);
-        }
-    }
-    statusMessage() {
-        this.mMsg.setText("Frame Index: " + this.frameIndex );
     }
 
 }
