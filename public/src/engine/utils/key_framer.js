@@ -66,10 +66,11 @@ class Animation {
     this.mFrames = [];
   }
 
-  addFrame(mRenderable) {
+  addFrame(mRenderable, index) {
     if ( mRenderable != null ) {
       let toAdd = new Frame(mRenderable);
-
+      toAdd.setFrameIndex(index);
+      
       this.mFrames.push(toAdd);
     }
   }
