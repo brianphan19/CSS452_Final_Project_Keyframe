@@ -76,10 +76,12 @@ class MyGame extends engine.Scene {
     // anything from this function!
     update () {
         this.player.update(this.animation);
+        //add frame
         if (engine.input.isKeyClicked(engine.input.keys.Space)) {
             this.animation.addFrame(this.mBox);
         }
 
+        // movement
         if (engine.input.isKeyPressed(engine.input.keys.Up)) {
             this.mBox.getXform().incYPosBy(this.moveSpeed);
         }
@@ -96,9 +98,12 @@ class MyGame extends engine.Scene {
             this.player.pause();
         }
 
+
         if (engine.input.isKeyClicked(engine.input.keys.R)) {
             this.player.resume();
         }
+
+        //frame rate of change
         if (engine.input.isKeyPressed(engine.input.keys.I)) {
             console.log(this.player.rate);
             this.player.changeRate(0.01);
@@ -107,6 +112,8 @@ class MyGame extends engine.Scene {
             console.log(this.player.rate);
             this.player.changeRate(-0.01);
         }
+
+        //frame interpolation cycle
         if (engine.input.isKeyPressed(engine.input.keys.K)) {
             console.log(this.player.cycles);
             this.player.changeCycles(1);
@@ -115,6 +122,8 @@ class MyGame extends engine.Scene {
             console.log(this.player.cycles);
             this.player.changeCycles(-1);
         }
+
+        //go to frame number
         if (engine.input.isKeyClicked(engine.input.keys.Zero)) {
             this.player.skipToFrame(0);
         }

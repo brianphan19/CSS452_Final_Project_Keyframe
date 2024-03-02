@@ -22,49 +22,41 @@ class KeyFramer {
   //add a renderable to the renderable map
   setRenderable(mRenderable) {
     // check if renderable is null
-    if ( mRenderable != null ) {
-      // use reference to renderable as key
-      // no animations right now so have an empty list
-      this.renderableMap.set(mRenderable, []);
+    if (mRenderable == null) return null;
 
-      // return the empty list
-      return this.renderableMap.get(mRenderable);
-    }
+    // use reference to renderable as key
+    // no animations right now so have an empty list
+    this.renderableMap.set(mRenderable, []);
 
-    // renderable not added
-    return null
+    // return the empty list
+    return this.renderableMap.get(mRenderable);
   }
 
   // get animations associated with renderable
   getAnimations(mRenderable) {
-    if(mRenderable != null){
-      return this.renderableMap.get(mRenderable);
-    }
-
-    return null
+    if (mRenderable == null) return null;
+    return this.renderableMap.get(mRenderable);
   }
 
   // create a new animation and add it to the renderable map
   newAnimation(mRenderable) {
-    // check renderable is not null
+    // check renderable is null
+    if( mRenderable == null ) return null;
     // other safety check here? Ensure renderable is renderable
-    if( mRenderable != null ){
-      // grab current animations list associated with renderable
-      let currAnimations = this.renderableMap.get(mRenderable)
+    
+    // grab current animations list associated with renderable
+    let currAnimations = this.renderableMap.get(mRenderable)
 
-      // create new animation to add to list
-      let toAdd = new Animation(mRenderable);
+    // create new animation to add to list
+    let toAdd = new Animation(mRenderable);
 
-      // append to end of list
-      currAnimations.push(toAdd);
+    // append to end of list
+    currAnimations.push(toAdd);
 
-      //update map value
-      this.renderableMap.set(mRenderable, toAdd);
+    //update map value
+    this.renderableMap.set(mRenderable, toAdd);
 
-      return toAdd;
-    }
-
-    return null;
+    return toAdd;
   }
 }
 
@@ -96,6 +88,7 @@ class Frame {
     this.mTransform.setXPos(mRenderable.getXform().getXPos());
 
     this.mTransform.setYPos(mRenderable.getXform().getYPos());
+    this.frameIndex;
   }
 
   getXPos() {
@@ -104,6 +97,14 @@ class Frame {
 
   getYPos() {
     return this.mTransform.getYPos();
+  }
+
+  setFrameIndex(index) {
+    this.frameIndex = index;
+  }
+
+  getFrameIndex() {
+    return this.frameIndex;
   }
 }
 

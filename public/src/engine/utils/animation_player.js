@@ -77,14 +77,14 @@ class AnimationPlayer {
 
   // increments frame index
   moveToNextFrame(animation){
+     // if there are no frames to be played return false
+    if( this.frames.length == 0 ) return false;
+    
     // if index is null then we are on the first frame
     if( this.frameIndex == null ){
       // set frame index
       this.frameIndex = 0;
     }
-
-    // if there are no frames to be played return false
-    if( this.frames.length == 0 ) return false;
 
     // if the index is out of bounds there are no more frames
     if(this.frameIndex >= this.frames.length) this.frameIndex = 0;
@@ -96,6 +96,7 @@ class AnimationPlayer {
     this.interpolateY.setFinal(frame.getYPos());
     // increment frame index
     this.frameIndex++;
+    return true;
   }
 
   pause(){
@@ -115,11 +116,13 @@ class AnimationPlayer {
     }
     return false;
   }
+
   changeRate(int){
     this.rate += int;
     this.interpolateX = new Lerp(this.currXPos, this.cycles, this.rate);
     this.interpolateY = new Lerp(this.currYPos, this.cycles, this.rate);
   }
+
   changeCycles(int){
     this.cycles += int;
     this.interpolateX = new Lerp(this.currXPos, this.cycles, this.rate);
