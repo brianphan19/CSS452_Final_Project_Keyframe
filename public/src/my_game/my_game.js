@@ -18,6 +18,7 @@ class MyGame extends engine.Scene {
 
         // declaration of keyframer reference
         this.mKeyFramer;
+        this.mMsg = null;
     }
         
     init() {
@@ -37,6 +38,11 @@ class MyGame extends engine.Scene {
         this.mBox.getXform().setSize(5,5);
         this.mBox.getXform().setPosition(0, 0);
 
+        this.mMsg = new engine.FontRenderable("Status: DyePacks(" + this.dyePacks.length + ")");
+        this.mMsg.setColor([1, 1, 1, 1]);
+        this.mMsg.getXform().setPosition(3, 4);
+        this.mMsg.setTextHeight(3);
+
         this.moveSpeed = 1;
 
         // initialization of keyframer object
@@ -47,6 +53,7 @@ class MyGame extends engine.Scene {
 
         // create new animation
         this.animation = this.mKeyFramer.newAnimation(this.mBox);
+        this.frameIndex = 0;
 
         // create new frame
         // this.animation.addFrame(this.mBox);
@@ -67,7 +74,7 @@ class MyGame extends engine.Scene {
         // Step A: clear the canvas
         engine.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
         this.mCamera.setViewAndCameraMatrix();
-
+        this.mMsg.draw(this.mCamera);
 
         this.mBox.draw(this.mCamera);
     }
@@ -77,41 +84,20 @@ class MyGame extends engine.Scene {
     update () {
         this.player.update(this.animation);
         //add frame
-        if (engine.input.isKeyClicked(engine.input.keys.Space)) {
-            this.animation.addFrame(this.mBox);
-        }
+        this.addNewFrame()
 
         // movement
-        if (engine.input.isKeyPressed(engine.input.keys.Up)) {
-            this.mBox.getXform().incYPosBy(this.moveSpeed);
-        }
-        if (engine.input.isKeyPressed(engine.input.keys.Down)) {
-            this.mBox.getXform().incYPosBy(-this.moveSpeed);
-        }
-        if (engine.input.isKeyPressed(engine.input.keys.Right)) {
-            this.mBox.getXform().incXPosBy(this.moveSpeed);
-        }
-        if (engine.input.isKeyPressed(engine.input.keys.Left)) {
-            this.mBox.getXform().incXPosBy(-this.moveSpeed);
-        }
+        this.objectMovement(); 
+
         if (engine.input.isKeyClicked(engine.input.keys.P)) {
             this.player.pause();
         }
-
-
         if (engine.input.isKeyClicked(engine.input.keys.R)) {
             this.player.resume();
         }
 
         //frame rate of change
-        if (engine.input.isKeyPressed(engine.input.keys.I)) {
-            console.log(this.player.rate);
-            this.player.changeRate(0.01);
-        }
-        if (engine.input.isKeyPressed(engine.input.keys.U)) {
-            console.log(this.player.rate);
-            this.player.changeRate(-0.01);
-        }
+        this.changeInterpolateSpeed(0.01);
 
         //frame interpolation cycle
         if (engine.input.isKeyPressed(engine.input.keys.K)) {
@@ -144,6 +130,42 @@ class MyGame extends engine.Scene {
             this.player.skipToFrame(4);
         }
     }
+
+    objectMovement() {
+        if (engine.input.isKeyPressed(engine.input.keys.Up)) {
+            this.mBox.getXform().incYPosBy(this.moveSpeed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.Down)) {
+            this.mBox.getXform().incYPosBy(-this.moveSpeed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.Right)) {
+            this.mBox.getXform().incXPosBy(this.moveSpeed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.Left)) {
+            this.mBox.getXform().incXPosBy(-this.moveSpeed);
+        }
+    }
+
+    changeInterpolateSpeed(speed) {
+        if (engine.input.isKeyPressed(engine.input.keys.I)) {
+            console.log(this.player.rate);
+            this.player.changeRate(speed);
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.U)) {
+            console.log(this.player.rate);
+            this.player.changeRate(-speed);
+        }
+    }
+
+    addNewFrame() {
+        if (engine.input.isKeyClicked(engine.input.keys.Space)) {
+            this.animation.addFrame(this.mBox, this.frameIndex++);
+        }
+    }
+    statusMessage() {
+        this.mMsg.setText("Frame Index: " + this.frameIndex );
+    }
+
 }
 
 window.onload = function () {
