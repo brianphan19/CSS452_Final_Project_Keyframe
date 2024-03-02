@@ -38,13 +38,7 @@ class MyGame extends engine.Scene {
         this.mBox.getXform().setSize(5,5);
         this.mBox.getXform().setPosition(0, 0);
 
-        this.frameIndex = 0;
-        this.interpolationSpd = 0.05;
-        this.interpolationCycles = 120;
-        this.mMsg = new engine.FontRenderable("Status: Frame Index(" + this.frameIndex + ")   Rate(" + this.interpolationSpd.toFixed(2) + ")   Cycle(" + this.interpolationCycles + ")");
-        this.mMsg.setColor([1, 1, 1, 1]);
-        this.mMsg.getXform().setPosition(-18,-8);
-        this.mMsg.setTextHeight(3);
+        
 
         this.moveSpeed = 1;
 
@@ -69,7 +63,14 @@ class MyGame extends engine.Scene {
 
         // start animation
         this.player.playAnimation(this.animation);
-        
+
+        this.frameIndex = this.player.currentFrame;
+        this.interpolationSpd = this.player.currentFrame;
+        this.interpolationCycles = this.player.currentFrame;
+        this.mMsg = new engine.FontRenderable("Status: Frame Index(" + this.frameIndex + ")   Rate(" + this.interpolationSpd.toFixed(2) + ")   Cycle(" + this.interpolationCycles + ")");
+        this.mMsg.setColor([1, 1, 1, 1]);
+        this.mMsg.getXform().setPosition(-18,-8);
+        this.mMsg.setTextHeight(3);
     }
     
     // This is the draw function, make sure to setup proper drawing environment, and more
@@ -106,11 +107,14 @@ class MyGame extends engine.Scene {
         //frame interpolation cycle
         this.changeInterpolateCycles(1);
 
+        //change frame index
+        this.changeFrameIndex(1);
+
         //go to frame number
         this.goToFrameNumber();
         this.statusMessage();
     }
-w
+
     objectMovement() {
         this.objectMovementArrow();
         this.objectMovementKeyBoard();
@@ -153,6 +157,9 @@ w
             this.interpolationSpd += deltaSpeed;
         }
         if (engine.input.isKeyPressed(engine.input.keys.U)) {
+            if (this.interpolationSpd == 0) return;
+
+
             console.log(this.player.rate);
             this.player.changeRate(-deltaSpeed);
             this.interpolationSpd -= deltaSpeed;
@@ -166,17 +173,40 @@ w
             this.interpolationCycles += deltaCycles;
         }
         if (engine.input.isKeyPressed(engine.input.keys.J)) {
+            if(this.interpolationCycles == 0) return;
+
             console.log(this.player.cycles);
             this.player.changeCycles(-deltaCycles);
             this.interpolationCycles -= deltaCycles;
         }
     }
+
+    changeFrameIndex(deltaFrame) {
+        if (engine.input.isKeyClicked(engine.input.keys.M)) {
+            console.log(this.player.frameIndex);
+            this.player.changeFrameIndex(deltaFrame);
+            this.frameIndex += deltaFrame;
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.N)) {
+            //check if frame index is 0
+            if(this.frameIndex == 0) return;
+
+            console.log(this.player.cycles);
+            this.player.changeFrameIndex(-deltaFrame);
+            this.frameIndex -= deltaFrame;
+        }
+    }
+
     addNewFrame() {
         if (engine.input.isKeyClicked(engine.input.keys.Space)) {
             this.animation.addFrame(this.mBox, this.frameIndex++);
         }
     }
     statusMessage() {
+        if (this.player.isPlaying) {
+            this.mMsg.setText("Status: Playing Frame Index(" + this.player.currentFrame + ")");
+            return;
+        }
         this.mMsg.setText("Status: Frame Index(" + this.frameIndex + ")   Rate(" + this.interpolationSpd.toFixed(2) + ")   Cycle(" + this.interpolationCycles + ")");
     }
 

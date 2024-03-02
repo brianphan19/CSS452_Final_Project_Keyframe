@@ -18,7 +18,7 @@ class AnimationPlayer {
 
     // initialized by play animation
     // tells use which frame is being interpolated
-    this.frameIndex = 0;
+    this.currentFrame = 0;
     // list of all frames in the animation
     this.frames = [];
     // current position of renderable
@@ -76,16 +76,16 @@ class AnimationPlayer {
     if( this.frames.length == 0 ) return false;
 
     // if the index is out of bounds there are no more frames
-    if(this.frameIndex >= this.frames.length) this.frameIndex = 0;
+    if(this.currentFrame >= this.frames.length) this.currentFrame = 0;
 
     // grab frame
-    let frame = this.frames[this.frameIndex];
+    let frame = this.frames[this.currentFrame];
 
     this.interpolateX.setFinal(frame.getXPos());
     this.interpolateY.setFinal(frame.getYPos());
 
     // increment frame index
-    this.frameIndex++;
+    this.currentFrame++;
     return true;
   }
 
@@ -101,7 +101,7 @@ class AnimationPlayer {
 
   skipToFrame(frameIndex){
     if (this.frames.length > frameIndex) {
-      this.frameIndex = frameIndex;
+      this.currentFrame = frameIndex;
       return true;
     }
     return false;
@@ -117,6 +117,10 @@ class AnimationPlayer {
     this.cycles += int;
     this.interpolateX = new Lerp(this.currXPos, this.cycles, this.rate);
     this.interpolateY = new Lerp(this.currYPos, this.cycles, this.rate);
+  }
+
+  changeFrameIndex(int){
+    this.frameIndex += int;
   }
 }
 
