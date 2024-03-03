@@ -47,12 +47,12 @@ class AnimationPlayer {
     this.currentTick++;
 
     
-    let dt = (this.currentTick - this.frames[this.currentFrame][0]) / this.frames[this.currentFrame+1][0]
+    let dt = (this.currentTick - this.frames[this.currentFrame][0]) / this.frames[this.currentFrame+1][0];
     let dx = this.frames[this.currentFrame+1][1].getXPos() - this.frames[this.currentFrame][1].getXPos();
     let dy = this.frames[this.currentFrame+1][1].getYPos() - this.frames[this.currentFrame][1].getYPos();
     //(pos2 - pos1) / (t2 - t1)
-    this.renderable.getXform().setXPos(dx*dt);
-    this.renderable.getXform().setYPos(dy*dt);
+    this.renderable.getXform().setXPos(this.frames[this.currentFrame][1].getXPos() + dx*dt);
+    this.renderable.getXform().setYPos(this.frames[this.currentFrame][1].getYPos() + dy*dt);
 
     
     if (this.currentTick >= this.frames[this.currentFrame+1][0]) this.currentFrame++;
@@ -66,6 +66,10 @@ class AnimationPlayer {
   resume(){
     this.currentFrame = 0;
     this.isPlaying = true;
+    this.currentTick = 0;
+
+    // get frame list
+    this.frames = animation.getFrames();
   }
 
   skipToFrame(frameIndex){
