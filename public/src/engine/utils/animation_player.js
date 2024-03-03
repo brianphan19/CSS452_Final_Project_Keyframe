@@ -57,27 +57,66 @@ class AnimationPlayer {
   }
 
   updateDisplacement(dt){
+    const currentFrame = this.frames[this.currentFrameIndex];
+    const nextFrame = this.frames[this.currentFrameIndex + 1];
 
-    let dx = this.frames[this.currentFrameIndex+1][1].getXPos() - this.frames[this.currentFrameIndex][1].getXPos();
-    let dy = this.frames[this.currentFrameIndex+1][1].getYPos() - this.frames[this.currentFrameIndex][1].getYPos();
-    //(pos2 - pos1) / (t2 - t1)
-    this.renderable.getXform().setXPos(this.frames[this.currentFrameIndex][1].getXPos() + dx*dt);
-    this.renderable.getXform().setYPos(this.frames[this.currentFrameIndex][1].getYPos() + dy*dt);
+    const currentFrameTransform = currentFrame[1];
+    const nextFrameTransform = nextFrame[1];
+
+    if (nextFrameTransform.getXPos() !== currentFrameTransform.getXPos() ||
+        nextFrameTransform.getYPos() !== currentFrameTransform.getYPos()) {
+        return; 
+    }
+
+    const dx = nextFrameTransform.getXPos() - currentFrameTransform.getXPos();
+    const dy = nextFrameTransform.getYPos() - currentFrameTransform.getYPos();
+
+    const newXPos = currentFrameTransform.getXPos() + dx * dt;
+    const newYPos = currentFrameTransform.getYPos() + dy * dt;
+
+    this.renderable.getXform().setXPos(newXPos);
+    this.renderable.getXform().setYPos(newYPos);
   }
-
   updateSize(dt) {
-    let dw = this.frames[this.currentFrameIndex+1][1].getWidth() - this.frames[this.currentFrameIndex][1].getWidth();
-    let dh = this.frames[this.currentFrameIndex+1][1].getHeight() - this.frames[this.currentFrameIndex][1].getHeight();
-    
-    this.renderable.getXform().setWidth(this.frames[this.currentFrameIndex][1].getWidth() + dw*dt);
-    this.renderable.getXform().setHeight(this.frames[this.currentFrameIndex][1].getHeight() + dh*dt);
-  }
+    const currentFrame = this.frames[this.currentFrameIndex];
+    const nextFrame = this.frames[this.currentFrameIndex + 1];
 
-  updateRotation(dt) {
-    let dr = this.frames[this.currentFrameIndex+1][1].getRotationInDegree() - this.frames[this.currentFrameIndex][1].getRotationInDegree();
-                
-    this.renderable.getXform().setRotationInDegree(this.frames[this.currentFrameIndex][1].getRotationInDegree() + dr*dt);
-  }
+    const currentFrameWidth = currentFrame[1].getWidth();
+    const currentFrameHeight = currentFrame[1].getHeight();
+    const nextFrameWidth = nextFrame[1].getWidth();
+    const nextFrameHeight = nextFrame[1].getHeight();
+
+    if (nextFrameWidth === currentFrameWidth && nextFrameHeight === currentFrameHeight) {
+        return; // No change in size
+    }
+
+    const dw = nextFrameWidth - currentFrameWidth;
+    const dh = nextFrameHeight - currentFrameHeight;
+
+    const newWidth = currentFrameWidth + dw * dt;
+    const newHeight = currentFrameHeight + dh * dt;
+
+    this.renderable.getXform().setWidth(newWidth);
+    this.renderable.getXform().setHeight(newHeight);
+}
+
+updateRotation(dt) {
+    const currentFrame = this.frames[this.currentFrameIndex];
+    const nextFrame = this.frames[this.currentFrameIndex + 1];
+
+    const currentRotation = currentFrame[1].getRotationInDegree();
+    const nextRotation = nextFrame[1].getRotationInDegree();
+
+    if (nextRotation === currentRotation) {
+        return; // No change in rotation
+    }
+
+    const dr = nextRotation - currentRotation;
+
+    const newRotation = currentRotation + dr * dt;
+
+    this.renderable.getXform().setRotationInDegree(newRotation);
+}
 
   pause(){
     this.isPlaying = false;
