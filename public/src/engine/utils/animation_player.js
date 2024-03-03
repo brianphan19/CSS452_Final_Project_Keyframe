@@ -7,7 +7,7 @@
 import Lerp from "./lerp.js";
 
 class AnimationPlayer {
-  constructor() {
+  constructor(mRenderable) {
     // characteristics of the animation
     // number of cycles for interpolator
     this.cycles = 120;
@@ -18,15 +18,11 @@ class AnimationPlayer {
 
     // initialized by play animation
     // tells use which frame is being interpolated
-    this.currentFrame = 0;
+    this.currentFrame;
+    this.currentTick;
     // list of all frames in the animation
     this.frames = [];
-    // current position of renderable
-    this.currXPos;
-    this.currYPos;
-    // interpolated values for x and y
-    this.interpolateX;
-    this.interpolateY;
+    this.renderable = mRenderable;
   }
 
   // grab data from animation class
@@ -34,69 +30,42 @@ class AnimationPlayer {
   playAnimation(animation) {
     // swap is playing to true
     this.isPlaying = false;
+    this.currentFrame = 0;
+    this.currentTick = 0;
 
     // get frame list
     this.frames = animation.getFrames();
-
-    // reference the renderable attached to the animation class
-    // set the current x and y position
-    this.currXPos = animation.mRenderable.getXform().getXPos();
-    this.currYPos = animation.mRenderable.getXform().getYPos();
-
-    // start interpolation with current position of renderable
-    this.interpolateX = new Lerp(this.currXPos, this.cycles, this.rate);
-    this.interpolateY = new Lerp(this.currYPos, this.cycles, this.rate);
-
-    // move to the first frame
-    this.moveToNextFrame();
   }
 
   update(animation){
     // if the animation is meant to be played
-    if( !this.isPlaying ) return false;
+    if (!this.isPlaying ) return;
 
-    // if there are no remaining cycles, we move to another frame
-    // if true is returned we can move to another frame
-    if( this.interpolateX.mCyclesLeft == 0 ) return this.moveToNextFrame(animation);
+    // if the player does not have any frames
+    if (this.frames.length == 0 ) return ;
+    if (this.frames[this.currentFrame + 1] == null) return this.pause();
+    this.currentTick++;
 
-    // get updated interpolated values
-    this.interpolateX.update();
-    this.interpolateY.update();
+    
+    let dt = (this.currentTick - this.frames[this.currentFrame][0]) / this.frames[this.currentFrame+1][0]
+    let dx = this.frames[this.currentFrame+1][1].getXPos() - this.frames[this.currentFrame][1].getXPos();
+    let dy = this.frames[this.currentFrame+1][1].getYPos() - this.frames[this.currentFrame][1].getYPos();
+    //(pos2 - pos1) / (t2 - t1)
+    this.renderable.getXform().setXPos(dx*dt);
+    this.renderable.getXform().setYPos(dy*dt);
 
-    // update renderables x and y position
-    animation.mRenderable.getXform().setXPos(this.interpolateX.get());
-    animation.mRenderable.getXform().setYPos(this.interpolateY.get());
+    
+    if (this.currentTick >= this.frames[this.currentFrame+1][0]) this.currentFrame++;
 
-    return true;   
-  }
-
-  // increments frame index
-  moveToNextFrame(animation){
-     // if there are no frames to be played return false
-    if( this.frames.length == 0 ) return false;
-
-    // if the index is out of bounds there are no more frames
-    if(this.currentFrame >= this.frames.length) this.currentFrame = 0;
-
-    // grab frame
-    let frame = this.frames[this.currentFrame];
-
-    this.interpolateX.setFinal(frame.getXPos());
-    this.interpolateY.setFinal(frame.getYPos());
-
-    // increment frame index
-    this.currentFrame++;
-    return true;
   }
 
   pause(){
     this.isPlaying = false;
-    return this.isPlaying;
   }
 
   resume(){
+    this.currentFrame = 0;
     this.isPlaying = true;
-    return this.isPlaying;
   }
 
   skipToFrame(frameIndex){
@@ -117,10 +86,6 @@ class AnimationPlayer {
     this.cycles += int;
     this.interpolateX = new Lerp(this.currXPos, this.cycles, this.rate);
     this.interpolateY = new Lerp(this.currYPos, this.cycles, this.rate);
-  }
-
-  changeFrameIndex(int){
-    this.frameIndex += int;
   }
 }
 

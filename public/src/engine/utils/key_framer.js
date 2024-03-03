@@ -68,10 +68,8 @@ class Animation {
 
   addFrame(mRenderable, index) {
     if ( mRenderable != null ) {
-      let toAdd = new Frame(mRenderable);
-      toAdd.setFrameIndex(index);
-      
-      this.mFrames.push(toAdd);
+      let toAdd = new Frame(mRenderable);      
+      this.mFrames.push([index * 60, toAdd]);
     }
   }
 
@@ -89,23 +87,22 @@ class Frame {
     this.mTransform.setXPos(mRenderable.getXform().getXPos());
 
     this.mTransform.setYPos(mRenderable.getXform().getYPos());
-    this.frameIndex;
+  }
+
+  setXPos(XPos) {
+    this.mTransform.setXPos(XPos)
   }
 
   getXPos() {
     return this.mTransform.getXPos();
   }
 
+  setYPos(YPos) {
+    this.mTransform.setYPos(YPos)
+  }
+
   getYPos() {
     return this.mTransform.getYPos();
-  }
-
-  setFrameIndex(index) {
-    this.frameIndex = index;
-  }
-
-  getFrameIndex() {
-    return this.frameIndex;
   }
 }
 
