@@ -63,11 +63,22 @@ class MyGame extends engine.Scene {
         // start animation
         this.player.playAnimation(this.animation);
 
-        this.frameIndex = this.player.currentFrame;
-        this.mMsg = new engine.FontRenderable("Status: Frame Index(" + this.frameIndex + ")");
-        this.mMsg.setColor([1, 1, 1, 1]);
-        this.mMsg.getXform().setPosition(-18,-8);
-        this.mMsg.setTextHeight(3);
+        this.frameIndex = this.player.currentFrameIndex;
+        this.objectSize = this.mBox.getXform().getSize();
+        this.objectDegree = this.mBox.getXform().getRotationInDegree();
+        this.objectPos = this.mBox.getXform().getPosition();
+
+        this.mMsg1 = new engine.FontRenderable("Playing(" + false + ")  Next Frame Index(" + this.frameIndex + ")");
+        this.mMsg1.setColor([1, 1, 1, 1]);
+        this.mMsg1.getXform().setPosition(-18,-5);
+        this.mMsg1.setTextHeight(3);
+
+        this.mMsg2 = new engine.FontRenderable("Data: Position(" + this.objectPos + 
+                                                      ")  Size(" + this.objectSize + 
+                                                    ")  Degree(" + this.objectDegree + ")")
+        this.mMsg2.setColor([1, 1, 1, 1]);
+        this.mMsg2.getXform().setPosition(-18,-8);
+        this.mMsg2.setTextHeight(3);
     }
     
     // This is the draw function, make sure to setup proper drawing environment, and more
@@ -76,7 +87,8 @@ class MyGame extends engine.Scene {
         // Step A: clear the canvas
         engine.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
         this.mCamera.setViewAndCameraMatrix();
-        this.mMsg.draw(this.mCamera);
+        this.mMsg1.draw(this.mCamera);
+        this.mMsg2.draw(this.mCamera);
 
         this.mBox.draw(this.mCamera);
     }
@@ -84,12 +96,12 @@ class MyGame extends engine.Scene {
     // The Update function, updates the application state. Make sure to _NOT_ draw
     // anything from this function!
     update () {
-        this.player.update(this.animation);
+        this.player.update();
         //add frame
         this.addNewFrame()
 
         // movement
-        this.objectMovement(); 
+        this.objectChange();
 
         if (engine.input.isKeyClicked(engine.input.keys.P)) {
             this.player.pause();
@@ -102,8 +114,13 @@ class MyGame extends engine.Scene {
         this.changeFrameIndex(1);
 
         //go to frame number
-        this.goToFrameNumber();
         this.statusMessage();
+    }
+    
+    objectChange() {
+        this.objectMovement(); 
+        this.changeObjectSize(.1);
+        this.rotateTarget(1);
     }
 
     objectMovement() {
@@ -152,6 +169,30 @@ class MyGame extends engine.Scene {
         }
     }
 
+    changeObjectSize(deltaSize) {
+        if (engine.input.isKeyPressed(engine.input.keys.K)) {
+            this.mBox.getXform().incSizeBy(deltaSize);
+            this.objectSize += deltaSize;
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.J)) {
+            this.mBox.getXform().incSizeBy(-deltaSize);
+            this.objectSize -= deltaSize;
+        }
+    }
+
+    rotateTarget(deltaDegree) {
+        if (engine.input.isKeyPressed(engine.input.keys.O)) {
+            this.mBox.getXform().incRotationByDegree(deltaDegree);
+            this.objectDegree += deltaDegree;
+            if (this.objectDegree == 360) this.objectDegree = 0;
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.I)) {
+            this.mBox.getXform().incRotationByDegree(-deltaDegree);
+            this.objectDegree -= deltaDegree;
+            if (this.objectDegree == -360) this.objectDegree = 0;
+        }
+    }
+
     addNewFrame() {
         if (engine.input.isKeyClicked(engine.input.keys.Space)) {
             this.animation.addFrame(this.mBox, this.frameIndex++);
@@ -159,34 +200,17 @@ class MyGame extends engine.Scene {
     }
     statusMessage() {
         if (this.player.isPlaying) {
-            this.mMsg.setText("Status: Playing Frame Index(" + this.player.currentFrame + ")");
+            this.mMsg1.setText("Playing(" + true + ")  Current Frame Index(" + (this.player.currentTick / 60 ).toFixed(2) + ")");
+            this.mMsg2.setText("Data: Position(" + this.player.renderable.getXform().getPosition()[0].toFixed(0) + "," + this.player.renderable.getXform().getPosition()[1].toFixed(0) +
+                                      ")  Size(" + this.player.renderable.getXform().getSize()[0].toFixed(0) + "," + this.player.renderable.getXform().getSize()[1].toFixed(0) +
+                                      ")  Degree(" + this.player.renderable.getXform().getRotationInDegree().toFixed(0) + ")")
             return;
         }
-        this.mMsg.setText("Status: Frame Index(" + this.frameIndex + ")");
+        this.mMsg1.setText("Playing(" + false + ")  Next Frame Index(" + this.frameIndex + ")");
+        this.mMsg2.setText("Data: Position(" + this.objectPos + 
+                                  ")  Size(" + this.objectSize + 
+                                ")  Degree(" + this.objectDegree + ")")
     }
-
-    goToFrameNumber() {
-        if (engine.input.isKeyClicked(engine.input.keys.Zero)) {
-            this.player.skipToFrame(0);
-        }
-
-        if (engine.input.isKeyClicked(engine.input.keys.One)) {
-            this.player.skipToFrame(1);
-        }
-
-        if (engine.input.isKeyClicked(engine.input.keys.Two)) {
-            this.player.skipToFrame(2);
-        }
-
-        if (engine.input.isKeyClicked(engine.input.keys.Three)) {
-            this.player.skipToFrame(3);
-        }
-
-        if (engine.input.isKeyClicked(engine.input.keys.Four)) {
-            this.player.skipToFrame(4);
-        }
-    }
-
 }
 
 window.onload = function () {

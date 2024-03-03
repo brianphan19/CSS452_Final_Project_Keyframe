@@ -81,29 +81,19 @@ class Animation {
 class Frame {
   constructor(mRenderable){
     // create new transform
-    this.mTransform = new Transform();
-
-    // copy values of the renderables transformation
-    this.mTransform.setXPos(mRenderable.getXform().getXPos());
-
-    this.mTransform.setYPos(mRenderable.getXform().getYPos());
+    this.width = mRenderable.getXform().getWidth();
+    this.height = mRenderable.getXform().getWidth();
+    this.XPos = mRenderable.getXform().getXPos();
+    this.YPos = mRenderable.getXform().getYPos();
+    this.rotationInDegree = mRenderable.getXform().getRotationInDegree();
   }
 
-  setXPos(XPos) {
-    this.mTransform.setXPos(XPos)
-  }
 
-  getXPos() {
-    return this.mTransform.getXPos();
-  }
-
-  setYPos(YPos) {
-    this.mTransform.setYPos(YPos)
-  }
-
-  getYPos() {
-    return this.mTransform.getYPos();
-  }
+  getXPos() { return this.XPos; }
+  getYPos() { return this.YPos; }
+  getWidth() { return this.width; }
+  getHeight() { return this.height; }
+  getRotationInDegree() { return this.rotationInDegree; }
 }
 
 export default KeyFramer;
