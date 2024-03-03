@@ -4,55 +4,46 @@
  */
 "use strict";
 
-import Lerp from "./lerp.js";
-
 class AnimationPlayer {
   constructor(mRenderable) {
-    // characteristics of the animation
-    // number of cycles for interpolator
-    this.cycles = 120;
-    // speed of interpolator
-    this.rate = .05;
     // should the animation be playing
     this.isPlaying = false;
 
-    // initialized by play animation
-    // tells use which frame is being interpolated
+    //global variables used during liner interpolation
     this.currentFrameIndex;
     this.currentTick;
     this.currentFrame;
     this.nextFrame;
+
     // list of all frames in the animation
     this.frames = [];
+
     this.renderable = mRenderable;
   }
 
   // grab data from animation class
-  // start interpolation
+  // prep for interpolation
   playAnimation(animation) {
-    // swap is playing to true
     this.isPlaying = false;
     this.currentFrameIndex = 0;
     this.currentTick = 0;
-
-    // get frame list
     this.frames = animation.getFrames();
   }
 
   update() {
     // if the animation is meant to be played
     if (!this.isPlaying ) return;
-
     // if the player does not have any frames
-    if (this.frames.length == 0 ) return ;
+    if (this.frames.length == 0 ) return;
+    //if the player reach last frame
     if (this.frames[this.currentFrameIndex + 1] == null) return this.pause();
-    this.currentTick++;
 
+    this.currentTick++;
     this.currentFrame = this.frames[this.currentFrameIndex];
     this.nextFrame = this.frames[this.currentFrameIndex + 1];
-
     let dt = (this.currentTick - this.currentFrame[0]) / (this.nextFrame[0] - this.currentFrame[0]);
 
+    //update during transition
     this.updateDisplacement(dt);
     this.updateSize(dt);
     this.updateRotation(dt);
@@ -79,6 +70,7 @@ class AnimationPlayer {
     this.renderable.getXform().setXPos(newXPos);
     this.renderable.getXform().setYPos(newYPos);
   }
+
   updateSize(dt) {
     const currentFrameWidth = this.currentFrame[1].getWidth();
     const currentFrameHeight = this.currentFrame[1].getHeight();
@@ -99,6 +91,7 @@ class AnimationPlayer {
     this.renderable.getXform().setWidth(newWidth);
     this.renderable.getXform().setHeight(newHeight);
   }
+
   updateRotation(dt) {
       const currentRotation = this.currentFrame[1].getRotationInDegree();
       const nextRotation = this.nextFrame[1].getRotationInDegree();
@@ -127,7 +120,7 @@ class AnimationPlayer {
     const dB = nextB - currentB;
 
     if (dR == 0 && dG == 0 && dB == 0) {
-      return; // No change
+      return; // No change in color
     }
 
     const newR = currentR + dR * dt;
@@ -145,26 +138,6 @@ class AnimationPlayer {
     this.currentFrameIndex = 0;
     this.isPlaying = true;
     this.currentTick = 0;
-  }
-
-  skipToFrame(frameIndex){
-    if (this.frames.length > frameIndex) {
-      this.currentFrameIndex = frameIndex;
-      return true;
-    }
-    return false;
-  }
-
-  changeRate(int){
-    this.rate += int;
-    this.interpolateX = new Lerp(this.currXPos, this.cycles, this.rate);
-    this.interpolateY = new Lerp(this.currYPos, this.cycles, this.rate);
-  }
-
-  changeCycles(int){
-    this.cycles += int;
-    this.interpolateX = new Lerp(this.currXPos, this.cycles, this.rate);
-    this.interpolateY = new Lerp(this.currYPos, this.cycles, this.rate);
   }
 }
 
