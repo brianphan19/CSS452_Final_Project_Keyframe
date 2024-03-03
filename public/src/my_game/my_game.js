@@ -25,8 +25,8 @@ class MyGame extends engine.Scene {
         // Step A: set up the cameras
         this.mCamera = new engine.Camera(
             vec2.fromValues(30, 27.5), // position of the camera
-            100,                       // width of camera
-            [0, 0, 640, 480]           // viewport (orgX, orgY, width, height)
+            120,                       // width of camera
+            [0, 0, 768, 576]           // viewport (orgX, orgY, width, height)
         );
 
         // sets the background to gray
@@ -59,14 +59,14 @@ class MyGame extends engine.Scene {
 
         this.mMsg1 = new engine.FontRenderable("Playing(" + false + ")  Next Frame Index(" + this.frameIndex + ")");
         this.mMsg1.setColor([1, 1, 1, 1]);
-        this.mMsg1.getXform().setPosition(-18,-5);
+        this.mMsg1.getXform().setPosition(-25,-12);
         this.mMsg1.setTextHeight(3);
 
         this.mMsg2 = new engine.FontRenderable("Data: Position(" + this.objectPos + 
                                                       ")  Size(" + this.objectSize + 
                                                     ")  Degree(" + this.objectDegree + ")")
         this.mMsg2.setColor([1, 1, 1, 1]);
-        this.mMsg2.getXform().setPosition(-18,-8);
+        this.mMsg2.getXform().setPosition(-25,-15);
         this.mMsg2.setTextHeight(3);
     }
     
@@ -165,11 +165,9 @@ class MyGame extends engine.Scene {
     changeObjectSize(deltaSize) {
         if (engine.input.isKeyPressed(engine.input.keys.K)) {
             this.mBox.getXform().incSizeBy(deltaSize);
-            this.objectSize += deltaSize;
         }
         if (engine.input.isKeyPressed(engine.input.keys.J)) {
             this.mBox.getXform().incSizeBy(-deltaSize);
-            this.objectSize -= deltaSize;
         }
     }
 
@@ -235,19 +233,24 @@ class MyGame extends engine.Scene {
 
     messageDuringAnimation() {
         this.mMsg1.setText("Playing(" + true + ")  Current Frame Index(" + (this.player.currentTick / 60 ).toFixed(2) + ")");
-        this.mMsg2.setText("Data: Position(" + this.player.renderable.getXform().getPosition()[0].toFixed(0) + "," + this.player.renderable.getXform().getPosition()[1].toFixed(0) +
-                                    ")  Size(" + this.player.renderable.getXform().getSize()[0].toFixed(0) + "," + this.player.renderable.getXform().getSize()[1].toFixed(0) +
-                                    ")  Degree(" + this.player.renderable.getXform().getRotationInDegree().toFixed(0) + ")")
+        this.mMsg2.setText("Position(" + this.vectoToFixed(this.player.renderable.getXform().getPosition(), 0) +
+                             ") Size(" + this.vectoToFixed(this.player.renderable.getXform().getSize(), 1) +
+                             ") Degree(" + this.player.renderable.getXform().getRotationInDegree().toFixed(0) + ")")
     }
 
     messageDefault() {
         this.mMsg1.setText("Playing(" + false + ")  Next Frame Index(" + this.frameIndex + ")");
-        this.mMsg2.setText("Data: Position(" + this.mBox.getXform().getXPos() + "," + this.mBox.getXform().getYPos() + 
-                                  ")  Size(" + this.mBox.getXform().getWidth().toFixed(1) + "," +  this.mBox.getXform().getHeight().toFixed(1) + 
-                                ")  Degree(" + this.mBox.getXform().getRotationInDegree().toFixed(0) + ")")
+        this.mMsg2.setText("Position(" + this.vectoToFixed(this.mBox.getXform().getPosition(), 0)+ 
+                             ") Size(" + this.vectoToFixed(this.mBox.getXform().getSize(), 1) + 
+                           ") Degree(" + this.mBox.getXform().getRotationInDegree().toFixed(0) + 
+                            ") Color(" + this.vectoToFixed(this.mBox.getColor(), 1) + ")")
     }
 
-
+    vectoToFixed(vector, decimal) {
+       let result = [];
+       for (let value of vector) result.push(value.toFixed(decimal));
+       return result;
+    }
 }
 
 window.onload = function () {
