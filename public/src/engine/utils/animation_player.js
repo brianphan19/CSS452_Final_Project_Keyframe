@@ -47,7 +47,8 @@ class AnimationPlayer {
     this.currentTick++;
 
     
-    let dt = (this.currentTick - this.frames[this.currentFrame][0]) / this.frames[this.currentFrame+1][0];
+    let dt = (this.currentTick - this.frames[this.currentFrame][0]) /  
+              (this.frames[this.currentFrame+1][0] - this.frames[this.currentFrame][0]);
     let dx = this.frames[this.currentFrame+1][1].getXPos() - this.frames[this.currentFrame][1].getXPos();
     let dy = this.frames[this.currentFrame+1][1].getYPos() - this.frames[this.currentFrame][1].getYPos();
     //(pos2 - pos1) / (t2 - t1)
