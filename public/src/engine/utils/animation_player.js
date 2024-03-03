@@ -20,6 +20,8 @@ class AnimationPlayer {
     // tells use which frame is being interpolated
     this.currentFrameIndex;
     this.currentTick;
+    this.currentFrame;
+    this.nextFrame;
     // list of all frames in the animation
     this.frames = [];
     this.renderable = mRenderable;
@@ -46,45 +48,42 @@ class AnimationPlayer {
     if (this.frames[this.currentFrameIndex + 1] == null) return this.pause();
     this.currentTick++;
 
-    let dt = (this.currentTick - this.frames[this.currentFrameIndex][0]) /  
-              (this.frames[this.currentFrameIndex+1][0] - this.frames[this.currentFrameIndex][0]);
+    this.currentFrame = this.frames[this.currentFrameIndex];
+    this.nextFrame = this.frames[this.currentFrameIndex + 1];
+
+    let dt = (this.currentTick - this.currentFrame[0]) / (this.nextFrame[0] - this.currentFrame[0]);
 
     this.updateDisplacement(dt);
     this.updateSize(dt);
     this.updateRotation(dt);
         
-    if (this.currentTick >= this.frames[this.currentFrameIndex+1][0]) this.currentFrameIndex++;
+    if (this.currentTick >= this.nextFrame[0]) this.currentFrameIndex++;
   }
 
   updateDisplacement(dt){
-    const currentFrame = this.frames[this.currentFrameIndex];
-    const nextFrame = this.frames[this.currentFrameIndex + 1];
+    const currentFrameX = this.currentFrame[1].getXPos();
+    const currentFrameY = this.currentFrame[1].getYPos();
 
-    const currentFrameTransform = currentFrame[1];
-    const nextFrameTransform = nextFrame[1];
+    const nextFrameX = this.nextFrame[1].getXPos();
+    const nextFrameY = this.nextFrame[1].getYPos();
 
-    if (nextFrameTransform.getXPos() !== currentFrameTransform.getXPos() ||
-        nextFrameTransform.getYPos() !== currentFrameTransform.getYPos()) {
-        return; 
-    }
+    if (currentFrameX == nextFrameX && currentFrameY == nextFrameY) return; 
 
-    const dx = nextFrameTransform.getXPos() - currentFrameTransform.getXPos();
-    const dy = nextFrameTransform.getYPos() - currentFrameTransform.getYPos();
+    const dx = nextFrameX  - currentFrameX;
+    const dy = nextFrameY - currentFrameY;
 
-    const newXPos = currentFrameTransform.getXPos() + dx * dt;
-    const newYPos = currentFrameTransform.getYPos() + dy * dt;
+    const newXPos = currentFrameX + dx * dt;
+    const newYPos = currentFrameY + dy * dt;
 
     this.renderable.getXform().setXPos(newXPos);
     this.renderable.getXform().setYPos(newYPos);
   }
   updateSize(dt) {
-    const currentFrame = this.frames[this.currentFrameIndex];
-    const nextFrame = this.frames[this.currentFrameIndex + 1];
+    const currentFrameWidth = this.currentFrame[1].getWidth();
+    const currentFrameHeight = this.currentFrame[1].getHeight();
 
-    const currentFrameWidth = currentFrame[1].getWidth();
-    const currentFrameHeight = currentFrame[1].getHeight();
-    const nextFrameWidth = nextFrame[1].getWidth();
-    const nextFrameHeight = nextFrame[1].getHeight();
+    const nextFrameWidth = this.nextFrame[1].getWidth();
+    const nextFrameHeight = this.nextFrame[1].getHeight();
 
     if (nextFrameWidth === currentFrameWidth && nextFrameHeight === currentFrameHeight) {
         return; // No change in size
@@ -101,11 +100,8 @@ class AnimationPlayer {
 }
 
 updateRotation(dt) {
-    const currentFrame = this.frames[this.currentFrameIndex];
-    const nextFrame = this.frames[this.currentFrameIndex + 1];
-
-    const currentRotation = currentFrame[1].getRotationInDegree();
-    const nextRotation = nextFrame[1].getRotationInDegree();
+    const currentRotation = this.currentFrame[1].getRotationInDegree();
+    const nextRotation = this.nextFrame[1].getRotationInDegree();
 
     if (nextRotation === currentRotation) {
         return; // No change in rotation
