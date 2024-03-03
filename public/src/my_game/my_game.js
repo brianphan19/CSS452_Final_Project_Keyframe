@@ -111,6 +111,7 @@ class MyGame extends engine.Scene {
         this.objectMovement(); 
         this.changeObjectSize(.1);
         this.changeObjectRotation(1);
+        this.changeObjectColor(.05);
     }
 
     //Function to change object placement
@@ -180,6 +181,43 @@ class MyGame extends engine.Scene {
 
         if (engine.input.isKeyPressed(engine.input.keys.I)) {
             this.mBox.getXform().incRotationByDegree(-deltaDegree);
+        }
+    }
+
+    changeObjectColor(delta) {
+        if (engine.input.isKeyPressed(engine.input.keys.V)) {
+            delta *= -1;
+        }
+        
+        let color = this.mBox.getColor();
+        let keyPressed = false;
+
+        if (engine.input.isKeyPressed(engine.input.keys.Z)) {
+            color[0] += delta;
+            if(color[0] > 1) color[0] = 1;
+            else if(color[0] < 0) color[0] = 0;
+            keyPressed = true;
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.X)) {
+            color[1] += delta;
+            if(color[1] > 1) color[1] = 1;
+            else if(color[1] < 0) color[1] = 0;
+            keyPressed = true;
+        }
+        if (engine.input.isKeyPressed(engine.input.keys.C)) {
+            color[2] += delta;
+            if(color[2] > 1) color[2] = 1;
+            else if(color[2] < 0) color[2] = 0;
+            keyPressed = true;
+        }
+
+        if (keyPressed) {
+            this.mBox.setColor([
+                color[0],
+                color[1],
+                color[2],
+                1.0
+            ]);
         }
     }
 

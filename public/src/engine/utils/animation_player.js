@@ -56,6 +56,7 @@ class AnimationPlayer {
     this.updateDisplacement(dt);
     this.updateSize(dt);
     this.updateRotation(dt);
+    this.updateColor(dt);
         
     if (this.currentTick >= this.nextFrame[0]) this.currentFrameIndex++;
   }
@@ -67,10 +68,10 @@ class AnimationPlayer {
     const nextFrameX = this.nextFrame[1].getXPos();
     const nextFrameY = this.nextFrame[1].getYPos();
 
-    if (currentFrameX == nextFrameX && currentFrameY == nextFrameY) return; 
-
     const dx = nextFrameX  - currentFrameX;
     const dy = nextFrameY - currentFrameY;
+    
+    if (dx == 0 && dy == 0) return;
 
     const newXPos = currentFrameX + dx * dt;
     const newYPos = currentFrameY + dy * dt;
@@ -85,34 +86,56 @@ class AnimationPlayer {
     const nextFrameWidth = this.nextFrame[1].getWidth();
     const nextFrameHeight = this.nextFrame[1].getHeight();
 
-    if (nextFrameWidth === currentFrameWidth && nextFrameHeight === currentFrameHeight) {
-        return; // No change in size
-    }
-
     const dw = nextFrameWidth - currentFrameWidth;
     const dh = nextFrameHeight - currentFrameHeight;
+
+    if (dw == 0 && dh == 0) {
+      return; // No change in size
+    }
 
     const newWidth = currentFrameWidth + dw * dt;
     const newHeight = currentFrameHeight + dh * dt;
 
     this.renderable.getXform().setWidth(newWidth);
     this.renderable.getXform().setHeight(newHeight);
-}
+  }
+  updateRotation(dt) {
+      const currentRotation = this.currentFrame[1].getRotationInDegree();
+      const nextRotation = this.nextFrame[1].getRotationInDegree();
 
-updateRotation(dt) {
-    const currentRotation = this.currentFrame[1].getRotationInDegree();
-    const nextRotation = this.nextFrame[1].getRotationInDegree();
+      const dr = nextRotation - currentRotation;
 
-    if (nextRotation === currentRotation) {
-        return; // No change in rotation
+      if (dr == 0) {
+          return; // No change in rotation
+      }
+
+      const newRotation = currentRotation + dr * dt;
+
+      this.renderable.getXform().setRotationInDegree(newRotation);
+  }
+  updateColor(dt) {
+    const currentR = this.currentFrame[1].getColor()[0];
+    const currentG = this.currentFrame[1].getColor()[1];
+    const currentB = this.currentFrame[1].getColor()[2];
+
+    const nextR = this.nextFrame[1].getColor()[0];
+    const nextG = this.nextFrame[1].getColor()[1];
+    const nextB = this.nextFrame[1].getColor()[2];
+    
+    const dR = nextR - currentR;
+    const dG = nextG - currentG;
+    const dB = nextB - currentB;
+
+    if (dR == 0 && dG == 0 && dB == 0) {
+      return; // No change
     }
 
-    const dr = nextRotation - currentRotation;
+    const newR = currentR + dR * dt;
+    const newG = currentG + dG * dt;
+    const newB = currentB + dB * dt;
 
-    const newRotation = currentRotation + dr * dt;
-
-    this.renderable.getXform().setRotationInDegree(newRotation);
-}
+    this.renderable.setColor([newR, newG, newB, 1.0]);
+  }
 
   pause(){
     this.isPlaying = false;

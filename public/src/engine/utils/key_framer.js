@@ -86,6 +86,7 @@ class Frame {
     this.XPos = mRenderable.getXform().getXPos();
     this.YPos = mRenderable.getXform().getYPos();
     this.rotationInDegree = mRenderable.getXform().getRotationInDegree();
+    this.color = mRenderable.getColor();
   }
 
 
@@ -94,6 +95,7 @@ class Frame {
   getWidth() { return this.width; }
   getHeight() { return this.height; }
   getRotationInDegree() { return this.rotationInDegree; }
+  getColor() { return this.color; }
 }
 
 export default KeyFramer;
