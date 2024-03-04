@@ -5,6 +5,10 @@
 "use strict";
 
 class AnimationPlayer {
+  /**
+   * Create an AnimationPlayer.
+   * @param {object} mRenderable - The renderable object associated with this AnimationPlayer.
+   */
   constructor(mRenderable) {
     // should the animation be playing
     this.isPlaying = false;
@@ -20,6 +24,9 @@ class AnimationPlayer {
     this.renderable = mRenderable;
   }
 
+  /**
+   * Update function to progress the animation playback.
+   */
   update() {
     // if the animation is meant to be played
     if (!this.isPlaying ) return;
@@ -43,6 +50,10 @@ class AnimationPlayer {
     }
   }
 
+  /**
+   * Update the displacement of the renderable object based on linear interpolation.
+   * @param {number} dt - The interpolation factor.
+   */
   updateDisplacement(dt){
     const currentFrameX = this.currentFrame.getXPos();
     const currentFrameY = this.currentFrame.getYPos();
@@ -62,6 +73,10 @@ class AnimationPlayer {
     this.renderable.getXform().setYPos(newYPos);
   }
 
+  /**
+   * Update the size of the renderable object based on linear interpolation.
+   * @param {number} dt - The interpolation factor.
+   */
   updateSize(dt) {
     const currentFrameWidth = this.currentFrame.getWidth();
     const currentFrameHeight = this.currentFrame.getHeight();
@@ -83,6 +98,10 @@ class AnimationPlayer {
     this.renderable.getXform().setHeight(newHeight);
   }
 
+  /**
+   * Update the rotation of the renderable object based on linear interpolation.
+   * @param {number} dt - The interpolation factor.
+   */
   updateRotation(dt) {
       const currentRotation = this.currentFrame.getRotationInDegree();
       const nextRotation = this.nextFrame.getRotationInDegree();
@@ -97,6 +116,11 @@ class AnimationPlayer {
 
       this.renderable.getXform().setRotationInDegree(newRotation);
   }
+
+  /**
+   * Update the color of the renderable object based on linear interpolation.
+   * @param {number} dt - The interpolation factor.
+   */
   updateColor(dt) {
     const currentR = this.currentFrame.getColor()[0];
     const currentG = this.currentFrame.getColor()[1];
@@ -121,10 +145,17 @@ class AnimationPlayer {
     this.renderable.setColor([newR, newG, newB, 1.0]);
   }
 
+  /**
+   * Pause the animation playback.
+   */
   pause(){
     this.isPlaying = false;
   }
 
+  /**
+   * Start the animation playback with the given animation.
+   * @param {object} animation - The animation to be played.
+   */
   start(animation){
     this.isPlaying = true;
     this.currentTick = 0;
