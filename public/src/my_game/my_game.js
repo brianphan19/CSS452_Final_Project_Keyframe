@@ -52,10 +52,7 @@ class MyGame extends engine.Scene {
         // animation player
         this.player = new AnimationPlayer(this.mBox)
 
-        // start animation
-        this.player.playAnimation(this.animation);
-
-        this.frameIndex = this.player.currentFrameIndex;
+        this.frameIndex = 0;
 
         this.mMsg1 = new engine.FontRenderable("Playing(" + false + ")  Next Frame Index(" + this.frameIndex + ")");
         this.mMsg1.setColor([1, 1, 1, 1]);
@@ -97,7 +94,7 @@ class MyGame extends engine.Scene {
             this.player.pause();
         }
         if (engine.input.isKeyClicked(engine.input.keys.R)) {
-            this.player.resume();
+            this.player.start(this.animation);
         }
 
         //change frame index

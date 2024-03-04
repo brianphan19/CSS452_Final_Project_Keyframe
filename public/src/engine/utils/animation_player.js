@@ -10,54 +10,45 @@ class AnimationPlayer {
     this.isPlaying = false;
 
     //global variables used during liner interpolation
-    this.currentFrameIndex;
     this.currentTick;
     this.currentFrame;
     this.nextFrame;
 
     // list of all frames in the animation
-    this.frames = [];
+    this.animation = null;
 
     this.renderable = mRenderable;
-  }
-
-  // grab data from animation class
-  // prep for interpolation
-  playAnimation(animation) {
-    this.isPlaying = false;
-    this.currentFrameIndex = 0;
-    this.currentTick = 0;
-    this.frames = animation.getFrames();
   }
 
   update() {
     // if the animation is meant to be played
     if (!this.isPlaying ) return;
     // if the player does not have any frames
-    if (this.frames.length == 0 ) return;
+    if (this.animation.isEmpty()) return;
     //if the player reach last frame
-    if (this.frames[this.currentFrameIndex + 1] == null) return this.pause();
+    if (this.currentFrame.next === null) return this.pause();
 
     this.currentTick++;
-    this.currentFrame = this.frames[this.currentFrameIndex];
-    this.nextFrame = this.frames[this.currentFrameIndex + 1];
-    let dt = (this.currentTick - this.currentFrame[0]) / (this.nextFrame[0] - this.currentFrame[0]);
+    let dt = (this.currentTick - this.currentFrame.frameIndex) / (this.nextFrame.frameIndex - this.currentFrame.frameIndex) ;
 
     //update during transition
     this.updateDisplacement(dt);
     this.updateSize(dt);
     this.updateRotation(dt);
     this.updateColor(dt);
-        
-    if (this.currentTick >= this.nextFrame[0]) this.currentFrameIndex++;
+
+    if (this.currentTick >= this.nextFrame.frameIndex){
+      this.currentFrame = this.nextFrame;
+      this.nextFrame = this.currentFrame.next;
+    }
   }
 
   updateDisplacement(dt){
-    const currentFrameX = this.currentFrame[1].getXPos();
-    const currentFrameY = this.currentFrame[1].getYPos();
+    const currentFrameX = this.currentFrame.getXPos();
+    const currentFrameY = this.currentFrame.getYPos();
 
-    const nextFrameX = this.nextFrame[1].getXPos();
-    const nextFrameY = this.nextFrame[1].getYPos();
+    const nextFrameX = this.nextFrame.getXPos();
+    const nextFrameY = this.nextFrame.getYPos();
 
     const dx = nextFrameX  - currentFrameX;
     const dy = nextFrameY - currentFrameY;
@@ -72,11 +63,11 @@ class AnimationPlayer {
   }
 
   updateSize(dt) {
-    const currentFrameWidth = this.currentFrame[1].getWidth();
-    const currentFrameHeight = this.currentFrame[1].getHeight();
+    const currentFrameWidth = this.currentFrame.getWidth();
+    const currentFrameHeight = this.currentFrame.getHeight();
 
-    const nextFrameWidth = this.nextFrame[1].getWidth();
-    const nextFrameHeight = this.nextFrame[1].getHeight();
+    const nextFrameWidth = this.nextFrame.getWidth();
+    const nextFrameHeight = this.nextFrame.getHeight();
 
     const dw = nextFrameWidth - currentFrameWidth;
     const dh = nextFrameHeight - currentFrameHeight;
@@ -93,8 +84,8 @@ class AnimationPlayer {
   }
 
   updateRotation(dt) {
-      const currentRotation = this.currentFrame[1].getRotationInDegree();
-      const nextRotation = this.nextFrame[1].getRotationInDegree();
+      const currentRotation = this.currentFrame.getRotationInDegree();
+      const nextRotation = this.nextFrame.getRotationInDegree();
 
       const dr = nextRotation - currentRotation;
 
@@ -107,13 +98,13 @@ class AnimationPlayer {
       this.renderable.getXform().setRotationInDegree(newRotation);
   }
   updateColor(dt) {
-    const currentR = this.currentFrame[1].getColor()[0];
-    const currentG = this.currentFrame[1].getColor()[1];
-    const currentB = this.currentFrame[1].getColor()[2];
+    const currentR = this.currentFrame.getColor()[0];
+    const currentG = this.currentFrame.getColor()[1];
+    const currentB = this.currentFrame.getColor()[2];
 
-    const nextR = this.nextFrame[1].getColor()[0];
-    const nextG = this.nextFrame[1].getColor()[1];
-    const nextB = this.nextFrame[1].getColor()[2];
+    const nextR = this.nextFrame.getColor()[0];
+    const nextG = this.nextFrame.getColor()[1];
+    const nextB = this.nextFrame.getColor()[2];
     
     const dR = nextR - currentR;
     const dG = nextG - currentG;
@@ -134,10 +125,13 @@ class AnimationPlayer {
     this.isPlaying = false;
   }
 
-  resume(){
-    this.currentFrameIndex = 0;
+  start(animation){
     this.isPlaying = true;
     this.currentTick = 0;
+
+    this.animation = animation;
+    this.currentFrame = this.animation.getFirstFrame();
+    this.nextFrame = this.currentFrame.next;
   }
 }
 

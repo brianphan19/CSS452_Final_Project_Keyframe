@@ -63,39 +63,48 @@ class KeyFramer {
 class Animation {
   constructor(mRenderable) {
     this.mRenderable = mRenderable;
-    this.mFrames = [];
+    this.firstFrame = null;
+    this.lastFrame = null;
   }
 
   addFrame(mRenderable, index) {
-    if ( mRenderable != null ) {
-      let toAdd = new Frame(mRenderable);      
-      this.mFrames.push([index * 60, toAdd]);
+    if ( mRenderable === null ) return;
+    let newFrame = new Frame(mRenderable, index);
+    
+    if (this.isEmpty()) {
+      this.firstFrame = newFrame;
+    } else {
+      this.lastFrame.next = newFrame;
     }
+    
+    this.lastFrame = newFrame;
   }
 
-  getFrames() {
-    return this.mFrames;
-  }
+  getFirstFrame() { return this.firstFrame; }
+
+  isEmpty() { return this.firstFrame === null; }
 }
 
 class Frame {
-  constructor(mRenderable){
-    // create new transform
-    this.width = mRenderable.getXform().getWidth();
-    this.height = mRenderable.getXform().getWidth();
-    this.XPos = mRenderable.getXform().getXPos();
-    this.YPos = mRenderable.getXform().getYPos();
-    this.rotationInDegree = mRenderable.getXform().getRotationInDegree();
-    this.color = mRenderable.getColor();
+  constructor(mRenderable, index){
+    // object state
+    this._width = mRenderable.getXform().getWidth();
+    this._height = mRenderable.getXform().getWidth();
+    this._XPos = mRenderable.getXform().getXPos();
+    this._YPos = mRenderable.getXform().getYPos();
+    this._rotationInDegree = mRenderable.getXform().getRotationInDegree();
+    this._color = mRenderable.getColor();
+
+    this.frameIndex = index * 60;
+    this.next = null;
   }
 
-
-  getXPos() { return this.XPos; }
-  getYPos() { return this.YPos; }
-  getWidth() { return this.width; }
-  getHeight() { return this.height; }
-  getRotationInDegree() { return this.rotationInDegree; }
-  getColor() { return this.color; }
+  getXPos() { return this._XPos; }
+  getYPos() { return this._YPos; }
+  getWidth() { return this._width; }
+  getHeight() { return this._height; }
+  getRotationInDegree() { return this._rotationInDegree; }
+  getColor() { return this._color; }
 }
 
 export default KeyFramer;
