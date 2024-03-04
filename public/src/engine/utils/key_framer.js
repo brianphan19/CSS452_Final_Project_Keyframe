@@ -50,6 +50,7 @@ class KeyFramer {
   newAnimation(mRenderable) {
     // Check if renderable is null
     if (mRenderable === null) return null;
+    // other safety check here? Ensure renderable is renderable
 
     // Get current animations list associated with renderable
     let currAnimations = this.renderableMap.get(mRenderable);
@@ -101,13 +102,16 @@ class Animation {
       this.firstFrame = newFrame;
       this.lastFrame = newFrame;
       return false;
-    } else if (index === null) {
+    } else if (index === null) { 
+      //if user add frame without index, the default will be add frame with index right after the last frame
       newFrame.frameIndex = this.lastFrame.frameIndex + 60;
       this.lastFrame.next = newFrame;
       this.lastFrame = newFrame;
       return false;
     } else {
+      //if user want to add frame at specific index
       let prevFrame = this.getFrameBeforeIndex(index * 60);
+      //safeguard for adding frame with used index on the same animation
       if (prevFrame.next !== null && index * 60 === prevFrame.next.frameIndex) return false;
       newFrame.next = prevFrame.next;
       prevFrame.next = newFrame;   
