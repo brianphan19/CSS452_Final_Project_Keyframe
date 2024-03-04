@@ -4,8 +4,6 @@
  */
 "use strict";
 
-import Transform from "./transform.js";
-
 
 // value: target for interpolation
 // cycles: integer, how many cycle it should take for a value to change to final
@@ -67,23 +65,64 @@ class Animation {
     this.lastFrame = null;
   }
 
-  addFrame(mRenderable, index) {
-    if ( mRenderable === null ) return;
-    let newFrame = new Frame(mRenderable, index);
+  addFrame(mRenderable, index = null) {
+    if ( mRenderable === null ) return false;
+    let newFrame = new Frame(mRenderable, index * 60);
     
+    //if list is empty
     if (this.isEmpty()) {
+      newFrame.frameIndex = 0;
       this.firstFrame = newFrame;
-    } else {
+      this.lastFrame = newFrame;
+      return false;
+    } 
+
+    //if user add frame without index, the default will be add frame with index right after the last frame
+    if (index === null) {
+      newFrame.frameIndex = this.lastFrame.frameIndex + 60;
       this.lastFrame.next = newFrame;
-    }
-    
+      this.lastFrame = newFrame;
+      return false;
+    } 
+
+    //if user want to add frame at specific index
+    let prevFrame = this.getFrameBeforeIndex(index * 60);
+    //safeguard for adding frame with used index on the same animation
+    if(prevFrame.next !== null && index * 60 === prevFrame.next.frameIndex) return false;
+
+    newFrame.next = prevFrame.next;
+    prevFrame.next = newFrame;   
     this.lastFrame = newFrame;
+    return true;
   }
 
   getFirstFrame() { return this.firstFrame; }
-
   isEmpty() { return this.firstFrame === null; }
-}
+
+  deleteFrame(index = null) {
+    if (this.isEmpty()) return false;
+    if (index === null) index = this.lastFrame.frameIndex;
+
+    let prevFrame = this.getFrameBeforeIndex(index);
+
+    prevFrame.next = prevFrame.next.next;
+    return true;
+  }
+
+  getFrameBeforeIndex(index) {
+    let currFrame = this.firstFrame;
+    let prevFrame = currFrame;
+
+    while (currFrame !== null) {
+      if (currFrame.frameIndex >= index) break;
+      
+      prevFrame = currFrame;
+      currFrame = currFrame.next;
+    }
+
+    return prevFrame;
+  }
+ }
 
 class Frame {
   constructor(mRenderable, index){
@@ -95,7 +134,7 @@ class Frame {
     this._rotationInDegree = mRenderable.getXform().getRotationInDegree();
     this._color = mRenderable.getColor();
 
-    this.frameIndex = index * 60;
+    this.frameIndex = index;
     this.next = null;
   }
 
