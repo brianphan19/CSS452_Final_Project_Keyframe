@@ -53,7 +53,7 @@ class AnimationPlayer {
     const dx = nextFrameX  - currentFrameX;
     const dy = nextFrameY - currentFrameY;
     
-    if (dx == 0 && dy == 0) return;
+    // if (dx == 0 && dy == 0) return;
 
     const newXPos = currentFrameX + dx * dt;
     const newYPos = currentFrameY + dy * dt;
@@ -72,9 +72,9 @@ class AnimationPlayer {
     const dw = nextFrameWidth - currentFrameWidth;
     const dh = nextFrameHeight - currentFrameHeight;
 
-    if (dw == 0 && dh == 0) {
-      return; // No change in size
-    }
+    // if (dw == 0 && dh == 0) {
+    //   return; // No change in size
+    // }
 
     const newWidth = currentFrameWidth + dw * dt;
     const newHeight = currentFrameHeight + dh * dt;
@@ -89,9 +89,9 @@ class AnimationPlayer {
 
       const dr = nextRotation - currentRotation;
 
-      if (dr == 0) {
-          return; // No change in rotation
-      }
+      // if (dr == 0) {
+      //     return; // No change in rotation
+      // }
 
       const newRotation = currentRotation + dr * dt;
 
@@ -110,9 +110,9 @@ class AnimationPlayer {
     const dG = nextG - currentG;
     const dB = nextB - currentB;
 
-    if (dR == 0 && dG == 0 && dB == 0) {
-      return; // No change in color
-    }
+    // if (dR == 0 && dG == 0 && dB == 0) {
+    //   return; // No change in color
+    // }
 
     const newR = currentR + dR * dt;
     const newG = currentG + dG * dt;
