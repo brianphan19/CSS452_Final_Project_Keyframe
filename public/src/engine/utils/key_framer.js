@@ -93,31 +93,33 @@ class Animation {
     // Check if renderable is null
     if (mRenderable === null) return false;
 
+    let timeIndex = index * 60;
     // Create a new frame
-    let newFrame = new Frame(mRenderable, index * 60);
+    let newFrame = new Frame(mRenderable, timeIndex);
     
     // Handle cases for adding frames
     if (this.isEmpty()) {
-      newFrame.frameIndex = 0;
+      if (index === null) newFrame.frameIndex = 0;
       this.firstFrame = newFrame;
-      this.lastFrame = newFrame;
-      return false;
-    } else if (index === null) { 
-      //if user add frame without index, the default will be add frame with index right after the last frame
-      newFrame.frameIndex = this.lastFrame.frameIndex + 60;
-      this.lastFrame.next = newFrame;
-      this.lastFrame = newFrame;
-      return false;
-    } else {
-      //if user want to add frame at specific index
-      let prevFrame = this.getFrameBeforeIndex(index * 60);
-      //safeguard for adding frame with used index on the same animation
-      if (prevFrame.next !== null && index * 60 === prevFrame.next.frameIndex) return false;
-      newFrame.next = prevFrame.next;
-      prevFrame.next = newFrame;   
       this.lastFrame = newFrame;
       return true;
     }
+    
+    
+    //if user add frame without index, the default will be add frame with index right after the last frame
+    if (index === null) {
+      timeIndex = this.lastFrame.frameIndex + 60;
+    }
+    
+    let prevFrame = this.getFrameBeforeIndex(timeIndex);
+
+    //safeguard for adding frame with used index on the same animation
+    if (prevFrame.next !== null && timeIndex === prevFrame.next.frameIndex) return false;
+
+    newFrame.next = prevFrame.next;
+    prevFrame.next = newFrame;   
+    this.lastFrame = newFrame;
+    return true;
   }
 
   /**
