@@ -102,6 +102,8 @@ class MyGame extends engine.Scene {
 
         //go to frame number
         this.statusMessage();
+
+        this.resetAnimation();
     }
     
     objectChange() {
@@ -219,6 +221,13 @@ class MyGame extends engine.Scene {
     addNewFrame() {
         if (engine.input.isKeyClicked(engine.input.keys.Space)) {
             this.animation.addFrame(this.mBox, this.frameIndex++);
+        }
+    }
+    
+    resetAnimation() {
+        if (engine.input.isKeyClicked(engine.input.keys.Q)) {
+            this.animation.reset();
+            this.frameIndex = 0;
         }
     }
 

@@ -146,7 +146,18 @@ class Animation {
     prevFrame.next = prevFrame.next.next;
     return true;
   }
-
+  
+  /**
+   * Reset the entire animation.
+   * @returns {boolean} - True if the animation is fully reset.
+   */
+  reset() {
+    if (this.isEmpty()) return false;
+    this.firstFrame = null;
+    this.lastFrame = null;
+    return true;
+  }
+  
   /**
    * Get the frame before a given index.
    * @param {number} index - The index of the frame (in seconds).

@@ -157,10 +157,12 @@ class AnimationPlayer {
    * @param {object} animation - The animation to be played.
    */
   start(animation){
+    this.animation = animation;
+    if(this.animation.isEmpty()) return;
+
     this.isPlaying = true;
     this.currentTick = 0;
 
-    this.animation = animation;
     this.currentFrame = this.animation.getFirstFrame();
     this.nextFrame = this.currentFrame.next;
   }
