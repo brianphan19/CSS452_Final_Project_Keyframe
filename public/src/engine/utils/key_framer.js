@@ -141,8 +141,11 @@ class Animation {
    */
   deleteFrame(index = null) {
     if (this.isEmpty()) return false;
+
     if (index === null) index = this.lastFrame.frameIndex;
-    let prevFrame = this.getFrameBeforeIndex(index);
+    else index * 60;
+    
+    let prevFrame = this.getFrameBeforeIndex(index * 60);
     prevFrame.next = prevFrame.next.next;
     return true;
   }
@@ -157,7 +160,7 @@ class Animation {
     this.lastFrame = null;
     return true;
   }
-  
+
   /**
    * Get the frame before a given index.
    * @param {number} index - The index of the frame (in seconds).

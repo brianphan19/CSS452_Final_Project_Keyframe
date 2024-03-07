@@ -85,7 +85,8 @@ class MyGame extends engine.Scene {
     update () {
         this.player.update();
         //add frame
-        this.addNewFrame()
+        this.addNewFrame();
+        this.deleteFrame(this.frameIndex - 1);
 
         // movement
         this.objectChange();
@@ -224,6 +225,12 @@ class MyGame extends engine.Scene {
         }
     }
     
+    deleteFrame(index = null) {
+        if (engine.input.isKeyClicked(engine.input.keys.E)) {
+            this.animation.deleteFrame(index);
+        }
+    }
+
     resetAnimation() {
         if (engine.input.isKeyClicked(engine.input.keys.Q)) {
             this.animation.reset();
