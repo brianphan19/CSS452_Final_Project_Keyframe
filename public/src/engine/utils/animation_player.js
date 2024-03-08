@@ -26,8 +26,13 @@ class AnimationPlayer {
 
   /**
    * Update function to progress the animation playback.
+   *  @param {Function} interpolation_func - The interpolation function given by the user
+   *  @param {Array} [other_params=null] - Arrays of parameter use for given interpolation function 
    */
-  update() {
+  update(other_params = null, interpolation_func = null) {
+    //check if user want to use default linear interpolation or their own 
+    if (interpolation_func !== null) return interpolation_func(this.animation, other_params);
+    
     // if the animation is meant to be played
     if (!this.isPlaying ) return;
     // if the player does not have any frames
@@ -39,10 +44,10 @@ class AnimationPlayer {
     let dt = (this.currentTick - this.currentFrame.frameIndex) / (this.nextFrame.frameIndex - this.currentFrame.frameIndex) ;
 
     //update during transition
-    this.updateDisplacement(dt);
-    this.updateSize(dt);
-    this.updateRotation(dt);
-    this.updateColor(dt);
+    this.updatePlacementLinear(dt);
+    this.updateSizeLinear(dt);
+    this.updateRotationLinear(dt);
+    this.updateColorLinear(dt);
 
     if (this.currentTick >= this.nextFrame.frameIndex){
       this.currentFrame = this.nextFrame;
@@ -54,7 +59,7 @@ class AnimationPlayer {
    * Update the displacement of the renderable object based on linear interpolation.
    * @param {number} dt - The interpolation factor.
    */
-  updateDisplacement(dt){
+  updatePlacementLinear(dt){
     const currentFrameX = this.currentFrame.getXPos();
     const currentFrameY = this.currentFrame.getYPos();
 
@@ -77,7 +82,7 @@ class AnimationPlayer {
    * Update the size of the renderable object based on linear interpolation.
    * @param {number} dt - The interpolation factor.
    */
-  updateSize(dt) {
+  updateSizeLinear(dt) {
     const currentFrameWidth = this.currentFrame.getWidth();
     const currentFrameHeight = this.currentFrame.getHeight();
 
@@ -102,7 +107,7 @@ class AnimationPlayer {
    * Update the rotation of the renderable object based on linear interpolation.
    * @param {number} dt - The interpolation factor.
    */
-  updateRotation(dt) {
+  updateRotationLinear(dt) {
       const currentRotation = this.currentFrame.getRotationInDegree();
       const nextRotation = this.nextFrame.getRotationInDegree();
 
@@ -121,7 +126,7 @@ class AnimationPlayer {
    * Update the color of the renderable object based on linear interpolation.
    * @param {number} dt - The interpolation factor.
    */
-  updateColor(dt) {
+  updateColorLinear(dt) {
     const currentR = this.currentFrame.getColor()[0];
     const currentG = this.currentFrame.getColor()[1];
     const currentB = this.currentFrame.getColor()[2];
