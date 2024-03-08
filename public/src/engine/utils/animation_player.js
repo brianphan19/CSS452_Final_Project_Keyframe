@@ -130,14 +130,17 @@ class AnimationPlayer {
     const currentR = this.currentFrame.getColor()[0];
     const currentG = this.currentFrame.getColor()[1];
     const currentB = this.currentFrame.getColor()[2];
+    const currentA = this.currentFrame.getColor()[3];
 
     const nextR = this.nextFrame.getColor()[0];
     const nextG = this.nextFrame.getColor()[1];
     const nextB = this.nextFrame.getColor()[2];
+    const nextA = this.nextFrame.getColor()[3];
     
     const dR = nextR - currentR;
     const dG = nextG - currentG;
     const dB = nextB - currentB;
+    const dA = nextA - currentA;
 
     // if (dR == 0 && dG == 0 && dB == 0) {
     //   return; // No change in color
@@ -146,8 +149,9 @@ class AnimationPlayer {
     const newR = currentR + dR * dt;
     const newG = currentG + dG * dt;
     const newB = currentB + dB * dt;
+    const newA = currentA + dA * dt;
 
-    this.renderable.setColor([newR, newG, newB, 1.0]);
+    this.renderable.setColor([newR, newG, newB, newA]);
   }
 
   /**
