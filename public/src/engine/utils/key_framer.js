@@ -52,6 +52,9 @@ class KeyFramer {
   newAnimation(mRenderable) {
     // Check if renderable is null
     if (mRenderable === null) return null;
+
+    //check if map already has renderable
+    if(this.renderableMap.has(mRenderable)) this.setRenderable(mRenderable)
     // other safety check here? Ensure renderable is renderable
 
     // Get current animations list associated with renderable
