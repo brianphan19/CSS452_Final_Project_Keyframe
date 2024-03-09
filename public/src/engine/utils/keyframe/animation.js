@@ -10,10 +10,8 @@ class Animation {
      */
     constructor(mRenderable) {
       // Initialize animation properties
-      this.mRenderable = mRenderable;
       this.firstFrame = null;
       this.lastFrame = null;
-      this.player = new AnimationPlayer(this.mRenderable);
     }
   
     /**
@@ -110,14 +108,6 @@ class Animation {
       }
   
       return prevFrame;
-    }
-  
-    pauseAnimation() {
-      this.player.pause();
-    }
-  
-    playAnimation() {
-      this.player.start(this);
     }
   }
   

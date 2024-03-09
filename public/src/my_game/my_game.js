@@ -77,7 +77,7 @@ class MyGame extends engine.Scene {
     // The Update function, updates the application state. Make sure to _NOT_ draw
     // anything from this function!
     update () {
-        this.animation.player.update();
+        this.mKeyFramer.update();
         //add frame
         this.addNewFrame();
         this.deleteFrame(this.frameIndex - 1);
@@ -86,10 +86,10 @@ class MyGame extends engine.Scene {
         this.objectChange();
 
         if (engine.input.isKeyClicked(engine.input.keys.P)) {
-            this.animation.pauseAnimation();
+            this.mKeyFramer.pause();
         }
         if (engine.input.isKeyClicked(engine.input.keys.R)) {
-            this.animation.playAnimation();
+            this.mKeyFramer.play();
         }
 
         //change frame index

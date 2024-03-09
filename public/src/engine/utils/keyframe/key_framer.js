@@ -4,7 +4,8 @@
  */
 "use strict";
 
-import Animation from "./animation.js";
+import AnimationDatabase from "./animation_database.js";
+import Animation from "./animation.js"
 
 /**
  * Class representing a KeyFramer for managing key frame animations.
@@ -25,13 +26,13 @@ class KeyFramer {
    */
   setRenderable(mRenderable) {
     // Check if renderable is null
-    if (mRenderable === null) return null;
+    if (mRenderable === null) return false;
 
+    let database = new AnimationDatabase(mRenderable);
     // Use reference to renderable as key and store an empty list of animations
-    this.renderableMap.set(mRenderable, []);
+    this.renderableMap.set(mRenderable, database);
 
-    // Return the empty list
-    return this.renderableMap.get(mRenderable);
+    return true;
   }
 
   /**
@@ -40,8 +41,14 @@ class KeyFramer {
    * @returns {array|null} - An array of animations associated with the renderable, or null if renderable is null.
    */
   getAnimations(mRenderable) {
-    if (mRenderable == null) return null;
-    return this.renderableMap.get(mRenderable);
+    if (mRenderable === null) return null;
+    if(!this.renderableMap.has(mRenderable)) return null;
+
+    let database = this.renderableMap.get(mRenderable);
+    if(!database.hasAnimation()) return null;
+
+
+    return database.getAnimations();
   }
 
   /**
@@ -57,19 +64,33 @@ class KeyFramer {
     if(this.renderableMap.has(mRenderable)) this.setRenderable(mRenderable)
     // other safety check here? Ensure renderable is renderable
 
-    // Get current animations list associated with renderable
-    let currAnimations = this.renderableMap.get(mRenderable);
-
     // Create a new animation
     let toAdd = new Animation(mRenderable);
 
     // Add the new animation to the list
-    currAnimations.push(toAdd);
-
-    // Update the renderable map
-    this.renderableMap.set(mRenderable, toAdd);
+    this.renderableMap.get(mRenderable).addAnimation(toAdd);
 
     return toAdd;
+  }
+
+  
+
+  update() {
+    for (let database of this.renderableMap.values()) {
+      database.player.update();
+    }
+  }
+
+  play() {
+    for (let database of this.renderableMap.values()) {
+      database.playAnimation();
+    }
+  }
+
+  pause() {
+    for (let database of this.renderableMap.values()) {
+      database.pauseAnimation();
+    }
   }
 }
 
