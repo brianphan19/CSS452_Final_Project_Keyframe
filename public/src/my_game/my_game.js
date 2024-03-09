@@ -2,9 +2,7 @@
 
 import engine from "../engine/index.js";
 import Renderable from "../engine/renderables/renderable.js";
-import KeyFramer from "../engine/utils/key_framer.js";
-import AnimationPlayer from "../engine/utils/animation_player.js";
-import { playBackground } from "../engine/resources/audio.js";
+
 
 class MyGame extends engine.Scene {
     constructor() {
@@ -41,17 +39,13 @@ class MyGame extends engine.Scene {
         this.moveSpeed = 1;
 
         // initialization of keyframer object
-        this.mKeyFramer = new KeyFramer();
+        this.mKeyFramer = new engine.KeyFramer();
 
         // add renderable to KeyFramer map
         this.mKeyFramer.setRenderable(this.mBox);
 
         // create new animation
         this.animation = this.mKeyFramer.newAnimation(this.mBox);
-
-        // animation player
-        this.player = new AnimationPlayer(this.mBox)
-
         this.frameIndex = 0;
 
         this.mMsg1 = new engine.FontRenderable("Playing(" + false + ")  Next Frame Index(" + this.frameIndex + ")");
@@ -83,7 +77,7 @@ class MyGame extends engine.Scene {
     // The Update function, updates the application state. Make sure to _NOT_ draw
     // anything from this function!
     update () {
-        this.player.update();
+        this.animation.player.update();
         //add frame
         this.addNewFrame();
         this.deleteFrame(this.frameIndex - 1);
@@ -92,10 +86,10 @@ class MyGame extends engine.Scene {
         this.objectChange();
 
         if (engine.input.isKeyClicked(engine.input.keys.P)) {
-            this.player.pause();
+            this.animation.pauseAnimation();
         }
         if (engine.input.isKeyClicked(engine.input.keys.R)) {
-            this.player.start(this.animation);
+            this.animation.playAnimation();
         }
 
         //change frame index
@@ -240,26 +234,28 @@ class MyGame extends engine.Scene {
 
     // message status
     statusMessage() {
-        if (this.player.isPlaying) return this.messageDuringAnimation();
+        if (this.animation.player.isPlaying) return this.messageDuringAnimation(this.animation.player);
         this.messageDefault();
     }
 
-    messageDuringAnimation() {
-        this.mMsg1.setText("Playing(" + true + ")  Current Frame Index(" + (this.player.currentTick / 60 ).toFixed(2) + ")");
-        this.mMsg2.setText("Position(" + this.vectoToFixed(this.player.renderable.getXform().getPosition(), 0) +
-                             ") Size(" + this.vectoToFixed(this.player.renderable.getXform().getSize(), 1) +
-                             ") Degree(" + this.player.renderable.getXform().getRotationInDegree().toFixed(0) + ")")
+    messageDuringAnimation(player) {
+        const transform = player.renderable.getXform();
+        this.mMsg1.setText("Playing(" + true + ")  Current Frame Index(" + (player.currentTick / 60 ).toFixed(2) + ")");
+        this.mMsg2.setText("Position(" + this.vectorToFixed(transform.getPosition(), 0) +
+                             ") Size(" + this.vectorToFixed(transform.getSize(), 1) +
+                             ") Degree(" + transform.getRotationInDegree().toFixed(0) + ")")
     }
 
     messageDefault() {
+        const transform = this.mBox.getXform();
         this.mMsg1.setText("Playing(" + false + ")  Next Frame Index(" + this.frameIndex + ")");
-        this.mMsg2.setText("Position(" + this.vectoToFixed(this.mBox.getXform().getPosition(), 0)+ 
-                             ") Size(" + this.vectoToFixed(this.mBox.getXform().getSize(), 1) + 
-                           ") Degree(" + this.mBox.getXform().getRotationInDegree().toFixed(0) + 
-                            ") Color(" + this.vectoToFixed(this.mBox.getColor(), 1) + ")")
+        this.mMsg2.setText("Position(" + this.vectorToFixed(transform.getPosition(), 0)+ 
+                             ") Size(" + this.vectorToFixed(transform.getSize(), 1) + 
+                           ") Degree(" + transform.getRotationInDegree().toFixed(0) + 
+                            ") Color(" + this.vectorToFixed(this.mBox.getColor(), 1) + ")")
     }
 
-    vectoToFixed(vector, decimal) {
+    vectorToFixed(vector, decimal) {
        let result = [];
        for (let value of vector) result.push(value.toFixed(decimal));
        return result;
