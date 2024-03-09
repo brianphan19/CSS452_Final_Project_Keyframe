@@ -4,6 +4,8 @@
  */
 "use strict";
 
+import AnimationPlayer from "./animation_player.js";
+
 /**
  * Class representing a KeyFramer for managing key frame animations.
  */
@@ -23,7 +25,7 @@ class KeyFramer {
    */
   setRenderable(mRenderable) {
     // Check if renderable is null
-    if (mRenderable == null) return null;
+    if (mRenderable === null) return null;
 
     // Use reference to renderable as key and store an empty list of animations
     this.renderableMap.set(mRenderable, []);
@@ -81,6 +83,7 @@ class Animation {
     this.mRenderable = mRenderable;
     this.firstFrame = null;
     this.lastFrame = null;
+    this.player = new AnimationPlayer(this.mRenderable);
   }
 
   /**
@@ -177,6 +180,14 @@ class Animation {
     }
 
     return prevFrame;
+  }
+
+  pauseAnimation() {
+    this.player.pause();
+  }
+
+  playAnimation() {
+    this.player.start(this);
   }
 }
 
