@@ -2,7 +2,7 @@
 
 import engine from "../engine/index.js";
 import Renderable from "../engine/renderables/renderable.js";
-import KeyFramer from "../engine/utils/key_framer.js";
+
 
 class MyGame extends engine.Scene {
     constructor() {
@@ -39,7 +39,7 @@ class MyGame extends engine.Scene {
         this.moveSpeed = 1;
 
         // initialization of keyframer object
-        this.mKeyFramer = new KeyFramer();
+        this.mKeyFramer = new engine.KeyFramer();
 
         // add renderable to KeyFramer map
         this.mKeyFramer.setRenderable(this.mBox);

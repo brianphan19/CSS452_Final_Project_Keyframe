@@ -27,8 +27,7 @@ import LerpVec2 from "./utils/lerp_vec2.js";
 import Oscillate from "./utils/oscillate.js";
 import Shake from "./utils/shake.js";
 import ShakeVec2 from "./utils/shake_vec2.js";
-import KeyFramer from "./utils/key_framer.js";
-import AnimationPlayer from "./utils/animation_player.js";
+import KeyFramer from "./utils/keyframe/key_framer.js";
 
 // camera and related supports
 import Camera from "./cameras/camera.js";
@@ -91,7 +90,7 @@ export default {
     Lerp, LerpVec2, Oscillate, Shake, ShakeVec2,
 
     // Util classes
-    Camera, Scene, Transform, BoundingBox, KeyFramer, AnimationPlayer,
+    Camera, Scene, Transform, BoundingBox, KeyFramer, 
      
     // Renderables
     Renderable, TextureRenderable, SpriteRenderable, SpriteAnimateRenderable, FontRenderable, LineRenderable,
