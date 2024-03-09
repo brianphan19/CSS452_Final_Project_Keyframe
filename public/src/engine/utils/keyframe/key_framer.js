@@ -41,7 +41,6 @@ class KeyFramer {
    * @returns {array|null} - An array of animations associated with the renderable, or null if renderable is null.
    */
   getAnimations(mRenderable) {
-    if (mRenderable === null) return null;
     if(!this.renderableMap.has(mRenderable)) return null;
 
     let database = this.renderableMap.get(mRenderable);
@@ -49,6 +48,22 @@ class KeyFramer {
 
 
     return database.getAnimations();
+  }
+  
+  /**
+   * set active animation for the renderable
+   * @param {object} mRenderable - renderable
+   * @param {number} index - index of the animation
+   * @returns 
+   */
+  setCurrentAnimation(mRenderable, index) {
+    // Check if renderable is null
+    if (mRenderable === null) return null;
+
+    //check if map already has renderable
+    if(!this.renderableMap.has(mRenderable)) return null;
+
+    this.renderableMap.get(mRenderable).setCurrentAnimation(index);
   }
 
   /**
@@ -73,20 +88,30 @@ class KeyFramer {
     return toAdd;
   }
 
-  
 
+  /** Animation Player related functions */
+
+  /**
+   * call update for every renderable stored
+   */
   update() {
     for (let database of this.renderableMap.values()) {
       database.player.update();
     }
   }
 
+  /**
+   * play current animation for every renderable stored
+   */
   play() {
     for (let database of this.renderableMap.values()) {
       database.playAnimation();
     }
   }
 
+  /**
+   * pause animation for every renderable stored
+   */
   pause() {
     for (let database of this.renderableMap.values()) {
       database.pauseAnimation();

@@ -1,5 +1,3 @@
-import AnimationPlayer from "./animation_player.js";
-
 /**
  * Class representing an animation.
  */

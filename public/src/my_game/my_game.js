@@ -234,21 +234,8 @@ class MyGame extends engine.Scene {
 
     // message status
     statusMessage() {
-        if (this.animation.player.isPlaying) return this.messageDuringAnimation(this.animation.player);
-        this.messageDefault();
-    }
-
-    messageDuringAnimation(player) {
-        const transform = player.renderable.getXform();
-        this.mMsg1.setText("Playing(" + true + ")  Current Frame Index(" + (player.currentTick / 60 ).toFixed(2) + ")");
-        this.mMsg2.setText("Position(" + this.vectorToFixed(transform.getPosition(), 0) +
-                             ") Size(" + this.vectorToFixed(transform.getSize(), 1) +
-                             ") Degree(" + transform.getRotationInDegree().toFixed(0) + ")")
-    }
-
-    messageDefault() {
         const transform = this.mBox.getXform();
-        this.mMsg1.setText("Playing(" + false + ")  Next Frame Index(" + this.frameIndex + ")");
+        this.mMsg1.setText("Next Frame Index(" + this.frameIndex + ")");
         this.mMsg2.setText("Position(" + this.vectorToFixed(transform.getPosition(), 0)+ 
                              ") Size(" + this.vectorToFixed(transform.getSize(), 1) + 
                            ") Degree(" + transform.getRotationInDegree().toFixed(0) + 
