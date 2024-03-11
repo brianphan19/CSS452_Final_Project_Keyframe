@@ -44,12 +44,19 @@ class KeyFramer {
     if(!this.renderableMap.has(mRenderable)) return null;
 
     let database = this.renderableMap.get(mRenderable);
-    if(!database.hasAnimation()) return null;
-
 
     return database.getAnimations();
   }
   
+  getActiveAnimation(mRenderable) {
+    if(!this.renderableMap.has(mRenderable)) return null;
+
+    let database = this.renderableMap.get(mRenderable);
+    if(!database.hasAnimation()) return null;
+
+    return database.getActiveAnimation();
+  }
+
   /**
    * set active animation for the renderable
    * @param {object} mRenderable - renderable

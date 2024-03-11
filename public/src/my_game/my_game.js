@@ -12,7 +12,7 @@ class MyGame extends engine.Scene {
         this.mCamera = null;
 
         // a simple box to test with
-        this.mBox;
+        this.mBox1;
 
         // declaration of keyframer reference
         this.mKeyFramer;
@@ -31,10 +31,18 @@ class MyGame extends engine.Scene {
         this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
 
         // initialization of simple box
-        this.mBox = new Renderable();
-        this.mBox.setColor([1,0,1,1]);
-        this.mBox.getXform().setSize(5,5);
-        this.mBox.getXform().setPosition(0, 0);
+        this.mBox1 = new Renderable();
+        this.mBox1.setColor([1,0,1,1]);
+        this.mBox1.getXform().setSize(5,5);
+        this.mBox1.getXform().setPosition(0, 0);
+
+        this.mBox2 = new Renderable();
+        this.mBox2.setColor([1,1,0,1]);
+        this.mBox2.getXform().setSize(5,5);
+        this.mBox2.getXform().setPosition(0, 7);
+
+        this.activeBox = this.mBox1;
+        this.activeBoxName = "Box 1";
 
         this.moveSpeed = 1;
 
@@ -42,20 +50,20 @@ class MyGame extends engine.Scene {
         this.mKeyFramer = new engine.KeyFramer();
 
         // add renderable to KeyFramer map
-        this.mKeyFramer.setRenderable(this.mBox);
+        this.mKeyFramer.setRenderable(this.mBox1);
+        this.mKeyFramer.setRenderable(this.mBox2);
 
         // create new animation
-        this.animation = this.mKeyFramer.newAnimation(this.mBox);
+        this.animation = this.mKeyFramer.newAnimation(this.mBox1);
+        this.animation = this.mKeyFramer.newAnimation(this.mBox2);
         this.frameIndex = 0;
 
-        this.mMsg1 = new engine.FontRenderable("Playing(" + false + ")  Next Frame Index(" + this.frameIndex + ")");
+        this.mMsg1 = new engine.FontRenderable("Next Frame Index(" + this.frameIndex + ")");
         this.mMsg1.setColor([1, 1, 1, 1]);
         this.mMsg1.getXform().setPosition(-25,-12);
         this.mMsg1.setTextHeight(3);
 
-        this.mMsg2 = new engine.FontRenderable("Data: Position(" + this.objectPos + 
-                                                      ")  Size(" + this.objectSize + 
-                                                    ")  Degree(" + this.objectDegree + ")")
+        this.mMsg2 = new engine.FontRenderable("Current Box: "  + this.activeBoxName);
         this.mMsg2.setColor([1, 1, 1, 1]);
         this.mMsg2.getXform().setPosition(-25,-15);
         this.mMsg2.setTextHeight(3);
@@ -71,7 +79,8 @@ class MyGame extends engine.Scene {
         this.mMsg1.draw(this.mCamera);
         this.mMsg2.draw(this.mCamera);
 
-        this.mBox.draw(this.mCamera);
+        this.mBox1.draw(this.mCamera);
+        this.mBox2.draw(this.mCamera);
     }
     
     // The Update function, updates the application state. Make sure to _NOT_ draw
@@ -103,44 +112,29 @@ class MyGame extends engine.Scene {
     
     objectChange() {
         this.objectMovement(); 
-        this.changeObjectSize(.1);
-        this.changeObjectRotation(1);
-        this.changeObjectColor(.05);
+        this.changeActiveBox();
+
+        let delta = 1;
+        if (engine.input.isKeyPressed(engine.input.keys.Z)) {
+            delta = -1;
+        }
+        this.changeObjectSize(.1 * delta);
+        this.changeObjectRotation(1 * delta);
+        this.changeObjectColor(.05 * delta);
     }
 
-    //Function to change object placement
     objectMovement() {
-        this.objectMovementArrow();
-        this.objectMovementKeyBoard();
-    }
-
-    objectMovementArrow() {
-        if (engine.input.isKeyPressed(engine.input.keys.Up)) {
-            this.mBox.getXform().incYPosBy(this.moveSpeed);
-        }
-        if (engine.input.isKeyPressed(engine.input.keys.Down)) {
-            this.mBox.getXform().incYPosBy(-this.moveSpeed);
-        }
-        if (engine.input.isKeyPressed(engine.input.keys.Right)) {
-            this.mBox.getXform().incXPosBy(this.moveSpeed);
-        }
-        if (engine.input.isKeyPressed(engine.input.keys.Left)) {
-            this.mBox.getXform().incXPosBy(-this.moveSpeed);
-        }
-    }
-
-    objectMovementKeyBoard() {
         if (engine.input.isKeyPressed(engine.input.keys.W)) {
-            this.mBox.getXform().incYPosBy(this.moveSpeed);
+            this.activeBox.getXform().incYPosBy(this.moveSpeed);
         }
         if (engine.input.isKeyPressed(engine.input.keys.S)) {
-            this.mBox.getXform().incYPosBy(-this.moveSpeed);
+            this.activeBox.getXform().incYPosBy(-this.moveSpeed);
         }
         if (engine.input.isKeyPressed(engine.input.keys.D)) {
-            this.mBox.getXform().incXPosBy(this.moveSpeed);
+            this.activeBox.getXform().incXPosBy(this.moveSpeed);
         }
         if (engine.input.isKeyPressed(engine.input.keys.A)) {
-            this.mBox.getXform().incXPosBy(-this.moveSpeed);
+            this.activeBox.getXform().incXPosBy(-this.moveSpeed);
         }
     }
 
@@ -157,46 +151,36 @@ class MyGame extends engine.Scene {
 
     //Function to change object size
     changeObjectSize(deltaSize) {
-        if (engine.input.isKeyPressed(engine.input.keys.K)) {
-            this.mBox.getXform().incSizeBy(deltaSize);
+        if (engine.input.isKeyPressed(engine.input.keys.O)) {
+            this.activeBox.getXform().incSizeBy(deltaSize);
         }
-        if (engine.input.isKeyPressed(engine.input.keys.J)) {
-            this.mBox.getXform().incSizeBy(-deltaSize);
-        }
+       
     }
 
     //Function to change object rotation
     changeObjectRotation(deltaDegree) {
-        if (engine.input.isKeyPressed(engine.input.keys.O)) {
-            this.mBox.getXform().incRotationByDegree(deltaDegree);
-        }
-
-        if (engine.input.isKeyPressed(engine.input.keys.I)) {
-            this.mBox.getXform().incRotationByDegree(-deltaDegree);
+        if (engine.input.isKeyPressed(engine.input.keys.P)) {
+            this.activeBox.getXform().incRotationByDegree(deltaDegree);
         }
     }
 
-    changeObjectColor(delta) {
-        if (engine.input.isKeyPressed(engine.input.keys.V)) {
-            delta *= -1;
-        }
-        
-        let color = this.mBox.getColor();
+    changeObjectColor(delta) { 
+        let color = this.mBox1.getColor();
         let keyPressed = false;
 
-        if (engine.input.isKeyPressed(engine.input.keys.Z)) {
+        if (engine.input.isKeyPressed(engine.input.keys.J)) {
             color[0] += delta;
             if(color[0] > 1) color[0] = 1;
             else if(color[0] < 0) color[0] = 0;
             keyPressed = true;
         }
-        if (engine.input.isKeyPressed(engine.input.keys.X)) {
+        if (engine.input.isKeyPressed(engine.input.keys.K)) {
             color[1] += delta;
             if(color[1] > 1) color[1] = 1;
             else if(color[1] < 0) color[1] = 0;
             keyPressed = true;
         }
-        if (engine.input.isKeyPressed(engine.input.keys.C)) {
+        if (engine.input.isKeyPressed(engine.input.keys.L)) {
             color[2] += delta;
             if(color[2] > 1) color[2] = 1;
             else if(color[2] < 0) color[2] = 0;
@@ -204,7 +188,7 @@ class MyGame extends engine.Scene {
         }
 
         if (keyPressed) {
-            this.mBox.setColor([
+            this.activeBox.setColor([
                 color[0],
                 color[1],
                 color[2],
@@ -213,9 +197,22 @@ class MyGame extends engine.Scene {
         }
     }
 
+    changeActiveBox() {
+        if(engine.input.isKeyClicked(engine.input.keys.Ctrl)) {
+            if (this.activeBox === this.mBox1) {
+                this.activeBox = this.mBox2;
+                this.activeBoxName = "Box 2"
+            }
+            else {
+                this.activeBox = this.mBox1;
+                this.activeBoxName = "Box 1`"
+            }
+        }
+    }
+
     addNewFrame() {
         if (engine.input.isKeyClicked(engine.input.keys.Space)) {
-            this.animation.addFrame(this.mBox, this.frameIndex++);
+            this.mKeyFramer.getActiveAnimation(this.activeBox).addFrame(this.activeBox, this.frameIndex++);
         }
     }
     
@@ -234,18 +231,27 @@ class MyGame extends engine.Scene {
 
     // message status
     statusMessage() {
-        const transform = this.mBox.getXform();
+        const transform = this.mBox1.getXform();
         this.mMsg1.setText("Next Frame Index(" + this.frameIndex + ")");
-        this.mMsg2.setText("Position(" + this.vectorToFixed(transform.getPosition(), 0)+ 
-                             ") Size(" + this.vectorToFixed(transform.getSize(), 1) + 
-                           ") Degree(" + transform.getRotationInDegree().toFixed(0) + 
-                            ") Color(" + this.vectorToFixed(this.mBox.getColor(), 1) + ")")
+        this.mMsg2.setText("Current Box: "  + this.activeBoxName);
     }
 
     vectorToFixed(vector, decimal) {
        let result = [];
        for (let value of vector) result.push(value.toFixed(decimal));
        return result;
+    }
+
+    getAnimationFramesIndex(renderable, animtionIndex) {
+        let animation = this.mKeyFramer.getAnimations(renderable)[animtionIndex];
+        let returnArr = []
+        let current = animation.firstFrame;
+        while(current) {
+            returnArr.push(current.frameIndex);
+            current = current.next;
+        }
+        
+        return returnArr;
     }
 }
 

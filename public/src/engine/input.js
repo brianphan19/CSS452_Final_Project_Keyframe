@@ -59,6 +59,8 @@ const keys = {
     Y : 89,
     Z : 90,
 
+    Ctrl : 17,
+    
     LastKeyCode: 222
 }
 

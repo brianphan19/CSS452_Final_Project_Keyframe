@@ -9,7 +9,7 @@ class AnimationDatabase {
         // Array to store animations
         this.animationStorage = [];
         // Index of the current animation being played
-        this.currentAnimationIndex = 0;
+        this.activeAnimationIndex = 0;
     }
 
     /**
@@ -17,13 +17,12 @@ class AnimationDatabase {
      * @param {number} index - Index of the animation to set as current.
      */
     setCurrentAnimation(index) {
-        // Check if the provided index is valid
-        if (index >= 0 && index < this.animationStorage.length) {
-            // Set the current animation index
-            this.currentAnimationIndex = index;
-        } else {
-            console.error("Invalid animation index provided.");
+        // Check if the provided index is invalid
+        if (index + 1 < this.animationStorage.length || index < 0) {
+            this.activeAnimationIndex = this.animationStorage.length - 1;
+            return;
         }
+        this.activeAnimationIndex = index;
     }
 
     /**
@@ -34,9 +33,13 @@ class AnimationDatabase {
         return this.animationStorage;
     }
 
+    getActiveAnimation() {
+        return this.animationStorage[this.activeAnimationIndex];
+    }
+
     /**
      * Add a new animation to the database.
-     * @param {*} animation - The animation to add.
+     * @param {object} animation - The animation to add.
      */
     addAnimation(animation) {
         this.animationStorage.push(animation);
@@ -53,8 +56,8 @@ class AnimationDatabase {
      * Play the animation at the current index.
      */
     playAnimation() {
-        // Start playing the animation using the AnimationPlayer
-        this.player.start(this.animationStorage[this.currentAnimationIndex]);
+        // Start playing the active animation using the AnimationPlayer
+        this.player.start(this.animationStorage[this.activeAnimationIndex]);
     }
 
     /**
