@@ -33,10 +33,18 @@ class AnimationDatabase {
         return this.animationStorage;
     }
 
+    /**
+     * Get the currently active animation.
+     * @returns {object} - The currently active animation.
+     */
     getActiveAnimation() {
         return this.animationStorage[this.activeAnimationIndex];
     }
 
+    /**
+     * Get the index of the currently active animation.
+     * @returns {number} - Index of the currently active animation.
+     */
     getActiveAnimationIndex() {
         return this.activeAnimationIndex;
     }
