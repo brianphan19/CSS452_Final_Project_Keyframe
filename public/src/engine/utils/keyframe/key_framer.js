@@ -63,6 +63,15 @@ class KeyFramer {
     return database.getActiveAnimation();
   }
 
+  getNumberOfAnimations(mRenderable) {
+    if (!this.renderableMap.has(mRenderable)) return null;
+
+    let database = this.renderableMap.get(mRenderable);
+    if (!database.hasAnimation()) return null;
+
+    return database.getNumberOfAnimations();
+  }
+
   /**
    * Get the index of the active animation associated with a renderable.
    * @param {object} mRenderable - The renderable object.

@@ -64,7 +64,7 @@ class MyGame extends engine.Scene {
         this.mMsg1.getXform().setPosition(-25,-12);
         this.mMsg1.setTextHeight(3);
 
-        this.mMsg2 = new engine.FontRenderable("Current Box: "  + this.activeBoxName + "  Animation (" + this.mKeyFramer.getActiveAnimationIndex(this.activeBox) + ") Array[" + this.getAnimationFramesArray(this.activeBox) + "]");
+        this.mMsg2 = new engine.FontRenderable("Current Box: "  + this.activeBoxName + "  Animation (" + (this.mKeyFramer.getActiveAnimationIndex(this.activeBox) + 1) + "/" + this.mKeyFramer.getNumberOfAnimations(this.activeBox) + "Array[" + this.getAnimationFramesArray(this.activeBox) + "]");
         this.mMsg2.setColor([1, 1, 1, 1]);
         this.mMsg2.getXform().setPosition(-25,-15);
         this.mMsg2.setTextHeight(3);
@@ -257,9 +257,8 @@ S
 
     // message status
     statusMessage() {
-        const transform = this.mBox1.getXform();
         this.mMsg1.setText("Next Frame Index(" + this.frameIndex + ")  Animation index(" + this.animationIndex + ")");
-        this.mMsg2.setText("Current Box: "  + this.activeBoxName + "  Animation(" + this.mKeyFramer.getActiveAnimationIndex(this.activeBox) + ") Array[" + this.getAnimationFramesArray(this.activeBox) + "]");
+        this.mMsg2.setText("Current Box: "  + this.activeBoxName + "  Animation (" + (this.mKeyFramer.getActiveAnimationIndex(this.activeBox) + 1) + "/" + this.mKeyFramer.getNumberOfAnimations(this.activeBox) + ") Array[" + this.getAnimationFramesArray(this.activeBox) + "]");
     }
 
     vectorToFixed(vector, decimal) {

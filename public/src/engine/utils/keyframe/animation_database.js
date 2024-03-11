@@ -50,6 +50,14 @@ class AnimationDatabase {
     }
 
     /**
+     * Get the numbers of stored animations.
+     * @returns {number} - numbers of stored animations.
+     */
+    getNumberOfAnimations() {
+        return this.animationStorage.length;
+    }
+
+    /**
      * Add a new animation to the database.
      * @param {object} animation - The animation to add.
      */
