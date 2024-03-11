@@ -16,9 +16,9 @@ class AnimationDatabase {
      * Set the current animation by index.
      * @param {number} index - Index of the animation to set as current.
      */
-    setCurrentAnimation(index) {
+    setActiveAnimation(index) {
         // Check if the provided index is invalid
-        if (index + 1 < this.animationStorage.length || index < 0) {
+        if (index + 1 > this.animationStorage.length || index < 0) {
             this.activeAnimationIndex = this.animationStorage.length - 1;
             return;
         }
@@ -35,6 +35,10 @@ class AnimationDatabase {
 
     getActiveAnimation() {
         return this.animationStorage[this.activeAnimationIndex];
+    }
+
+    getActiveAnimationIndex() {
+        return this.activeAnimationIndex;
     }
 
     /**

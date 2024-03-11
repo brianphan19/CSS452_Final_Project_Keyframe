@@ -57,20 +57,27 @@ class KeyFramer {
     return database.getActiveAnimation();
   }
 
+  getActiveAnimationIndex(mRenderable) {
+    if(!this.renderableMap.has(mRenderable)) return null;
+
+    let database = this.renderableMap.get(mRenderable);
+    return database.getActiveAnimationIndex();
+  }
+
   /**
    * set active animation for the renderable
    * @param {object} mRenderable - renderable
    * @param {number} index - index of the animation
    * @returns 
    */
-  setCurrentAnimation(mRenderable, index) {
+  setActiveAnimation(mRenderable, index) {
     // Check if renderable is null
     if (mRenderable === null) return null;
 
     //check if map already has renderable
     if(!this.renderableMap.has(mRenderable)) return null;
 
-    this.renderableMap.get(mRenderable).setCurrentAnimation(index);
+    this.renderableMap.get(mRenderable).setActiveAnimation(index);
   }
 
   /**
@@ -83,7 +90,7 @@ class KeyFramer {
     if (mRenderable === null) return null;
 
     //check if map already has renderable
-    if(this.renderableMap.has(mRenderable)) this.setRenderable(mRenderable)
+    if(!this.renderableMap.has(mRenderable)) this.setRenderable(mRenderable)
     // other safety check here? Ensure renderable is renderable
 
     // Create a new animation

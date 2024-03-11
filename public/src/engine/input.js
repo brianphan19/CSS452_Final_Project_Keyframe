@@ -60,7 +60,7 @@ const keys = {
     Z : 90,
 
     Ctrl : 17,
-    
+
     LastKeyCode: 222
 }
 

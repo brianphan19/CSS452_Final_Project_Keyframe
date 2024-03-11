@@ -54,16 +54,17 @@ class MyGame extends engine.Scene {
         this.mKeyFramer.setRenderable(this.mBox2);
 
         // create new animation
-        this.animation = this.mKeyFramer.newAnimation(this.mBox1);
-        this.animation = this.mKeyFramer.newAnimation(this.mBox2);
+        this.mKeyFramer.newAnimation(this.mBox1);
+        this.mKeyFramer.newAnimation(this.mBox2);
         this.frameIndex = 0;
+        this.animationIndex = 0;
 
-        this.mMsg1 = new engine.FontRenderable("Next Frame Index(" + this.frameIndex + ")");
+        this.mMsg1 = new engine.FontRenderable("Next Frame Index(" + this.frameIndex + ")  Animation index(" + this.animationIndex + ")" );
         this.mMsg1.setColor([1, 1, 1, 1]);
         this.mMsg1.getXform().setPosition(-25,-12);
         this.mMsg1.setTextHeight(3);
 
-        this.mMsg2 = new engine.FontRenderable("Current Box: "  + this.activeBoxName + "  Index Array[" + this.getAnimationFramesIndex(this.activeBox) + "]");
+        this.mMsg2 = new engine.FontRenderable("Current Box: "  + this.activeBoxName + "  Animation (" + this.mKeyFramer.getActiveAnimationIndex(this.activeBox) + ") Array[" + this.getAnimationFramesArray(this.activeBox) + "]");
         this.mMsg2.setColor([1, 1, 1, 1]);
         this.mMsg2.getXform().setPosition(-25,-15);
         this.mMsg2.setTextHeight(3);
@@ -103,6 +104,9 @@ class MyGame extends engine.Scene {
 
         //change frame index
         this.changeFrameIndex(1);
+        this.changeAnimationIndex(1);
+        this.newAnimation();
+        this.changeActiveAnimation();
 
         //go to frame number
         this.statusMessage();
@@ -138,17 +142,33 @@ class MyGame extends engine.Scene {
         }
     }
 
-    changeFrameIndex(deltaFrame) {
+    changeFrameIndex(delta) {
         if (engine.input.isKeyClicked(engine.input.keys.M)) {
-            this.frameIndex += deltaFrame;
+            this.frameIndex += delta;
         }
         if (engine.input.isKeyClicked(engine.input.keys.N)) {
             //check if frame index is 0
             if(this.frameIndex == 0) return;
-            this.frameIndex -= deltaFrame;
+            this.frameIndex -= delta;
         }
     }
 
+    changeAnimationIndex(delta) {
+        if (engine.input.isKeyClicked(engine.input.keys.B)) {
+            this.animationIndex += delta;
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.V)) {
+            //check if frame index is 0
+            if(this.animationIndex == 0) return;
+            this.animationIndex -= delta;
+        }
+    }
+
+    newAnimation() {
+        if (engine.input.isKeyClicked(engine.input.keys.F)) {
+            this.mKeyFramer.newAnimation(this.activeBox);
+        }
+    }
     //Function to change object size
     changeObjectSize(deltaSize) {
         if (engine.input.isKeyPressed(engine.input.keys.O)) {
@@ -165,7 +185,7 @@ class MyGame extends engine.Scene {
     }
 
     changeObjectColor(delta) { 
-        let color = this.mBox1.getColor();
+        let color = this.activeBox.getColor();
         let keyPressed = false;
 
         if (engine.input.isKeyPressed(engine.input.keys.J)) {
@@ -209,6 +229,12 @@ class MyGame extends engine.Scene {
             }
         }
     }
+S
+    changeActiveAnimation() {
+        if (engine.input.isKeyClicked(engine.input.keys.X)) {
+            this.mKeyFramer.setActiveAnimation(this.activeBox, this.animationIndex);
+        }
+    }
 
     addNewFrame() {
         if (engine.input.isKeyClicked(engine.input.keys.Space)) {
@@ -218,13 +244,13 @@ class MyGame extends engine.Scene {
     
     deleteFrame(index = null) {
         if (engine.input.isKeyClicked(engine.input.keys.E)) {
-            this.animation.deleteFrame(index);
+            this.mKeyFramer.getActiveAnimation(this.activeBox).deleteFrame(index);
         }
     }
 
     resetAnimation() {
         if (engine.input.isKeyClicked(engine.input.keys.Q)) {
-            this.animation.reset();
+            this.mKeyFramer.getActiveAnimation(this.activeBox).reset();
             this.frameIndex = 0;
         }
     }
@@ -232,8 +258,8 @@ class MyGame extends engine.Scene {
     // message status
     statusMessage() {
         const transform = this.mBox1.getXform();
-        this.mMsg1.setText("Next Frame Index(" + this.frameIndex + ")");
-        this.mMsg2.setText("Current Box: "  + this.activeBoxName + "  Index Array[" + this.getAnimationFramesIndex(this.activeBox) + "]");
+        this.mMsg1.setText("Next Frame Index(" + this.frameIndex + ")  Animation index(" + this.animationIndex + ")");
+        this.mMsg2.setText("Current Box: "  + this.activeBoxName + "  Animation(" + this.mKeyFramer.getActiveAnimationIndex(this.activeBox) + ") Array[" + this.getAnimationFramesArray(this.activeBox) + "]");
     }
 
     vectorToFixed(vector, decimal) {
@@ -242,7 +268,7 @@ class MyGame extends engine.Scene {
        return result;
     }
 
-    getAnimationFramesIndex(renderable, animtionIndex) {
+    getAnimationFramesArray(renderable) {
         let animation = this.mKeyFramer.getActiveAnimation(renderable);
         let retVal = [];
 
