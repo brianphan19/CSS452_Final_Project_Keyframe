@@ -48,7 +48,7 @@ class MyGame extends engine.Scene {
         this.mRenderComponent = new engine.SpriteAnimateRenderable(this.kMinionSprite);
         this.mRenderComponent.setColor([1, 1, 1, 0]); //Set color with transparency
         this.mRenderComponent.setElementPixelPositions(0, 184, 204, 348); // Set texture coordinates
-        this.mRenderComponent.getXform().setSize(10, 8); // Set size of the renderable
+        this.mRenderComponent.getXform().setSize(30, 24); // Set size of the renderable
         this.mRenderComponent.getXform().setPosition(10, 10); // Set initial position
         this.mRenderComponent.setSpriteSequence(512, 0,
                                                 204, 164,
@@ -103,8 +103,6 @@ class MyGame extends engine.Scene {
         this.addNewFrame();
         this.deleteFrame(this.frameIndex - 1);
 
-        this.mRenderComponent.updateAnimation();
-
         // movement
         this.objectChange();
 
@@ -113,6 +111,9 @@ class MyGame extends engine.Scene {
         }
         if (engine.input.isKeyClicked(engine.input.keys.R)) {
             this.mKeyFramer.play();
+        }
+        if (engine.input.isKeyClicked(engine.input.keys.F)) {
+            this.mKeyFramer.playLooping();
         }
 
         //change frame index

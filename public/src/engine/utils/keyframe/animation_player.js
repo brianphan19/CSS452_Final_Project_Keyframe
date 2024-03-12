@@ -4,6 +4,8 @@
  */
 "use strict";
 
+import SpriteAnimateRenderable from "../../renderables/sprite_animate_renderable.js";
+
 class AnimationPlayer {
   /**
    * Create an AnimationPlayer.
@@ -53,12 +55,41 @@ class AnimationPlayer {
     this.updateRotationLinear(dt);
     this.updateColorLinear(dt);
 
+    // if the renderable is sprite animated update additional param
+    if (SpriteAnimateRenderable.prototype.isPrototypeOf(this.renderable)) {
+      this.renderable.updateAnimation(); // Update animation
+    }
+
     // increase key frame when current exact frame >= next key frame
     if (this.currentTick >= this.nextFrame.frameIndex){
       this.currentFrame = this.nextFrame;
       this.nextFrame = this.currentFrame.next;
     }
   }
+  /**
+   * Update the displacement of the renderable object based on linear interpolation.
+   * @param {number} dt - The interpolation factor.
+   */
+  updateSpriteLinear(dt){
+    const currentFrameX = this.currentFrame.getXPos();
+    const currentFrameY = this.currentFrame.getYPos();
+
+    const nextFrameX = this.nextFrame.getXPos();
+    const nextFrameY = this.nextFrame.getYPos();
+
+    const dx = nextFrameX  - currentFrameX;
+    const dy = nextFrameY - currentFrameY;
+
+    // no change between frames
+    if (dx == 0 && dy == 0) return;
+
+    const newXPos = currentFrameX + dx * dt;
+    const newYPos = currentFrameY + dy * dt;
+
+    this.renderable.getXform().setXPos(newXPos);
+    this.renderable.getXform().setYPos(newYPos);
+  }
+
 
   /**
    * Update the displacement of the renderable object based on linear interpolation.

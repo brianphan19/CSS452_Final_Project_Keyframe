@@ -145,6 +145,17 @@ class KeyFramer {
   }
 
   /**
+   * Play the current animation for every renderable stored.
+   * Loop for as long a isLooping is true
+   * @returns {void}
+   */
+  playLoooping() {
+    for (let database of this.renderableMap.values()) {
+      database.playAnimation();
+    }
+  }
+
+  /**
    * Pause animation for every renderable stored.
    * @returns {void}
    */

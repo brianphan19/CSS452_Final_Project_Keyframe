@@ -1,3 +1,5 @@
+import SpriteAnimateRenderable from "../../renderables/sprite_animate_renderable.js";
+
 /**
  * Class representing an animation.
  */
@@ -22,9 +24,20 @@ class Animation {
       if (mRenderable === null) return false;
   
       let timeIndex = index * 60;
+
+      // to be assigned with new fram ref
+      let newFrame;
+
       // Create a new frame
-      let newFrame = new Frame(mRenderable, timeIndex);
-      
+      // if the renderable is of the sprite animate renderable class
+      if (SpriteAnimateRenderable.prototype.isPrototypeOf(mRenderable)) {
+        // create a special frame for animated renderable
+        newFrame = new AnimeFrame(mRenderable, timeIndex);
+      } else {
+        // otherwise create a more vanilla frame
+        newFrame = new Frame(mRenderable, timeIndex);
+      }
+
       // Handle cases for adding frames
       if (this.isEmpty()) {
         if (index === null) newFrame.frameIndex = 0;
@@ -166,6 +179,19 @@ class Animation {
      */
     getColor() { return this._color; }
   }
-  
+
+  /**
+   * Class representing a frame.
+   */
+  class AnimeFrame extends Frame {
+    /**
+     * Create a Frame.
+     * @param {object} mRenderable - The renderable object associated with this frame.
+     * @param {number} index - The index of the frame (by framerate: 1sec = 60).
+     */
+    constructor(mRenderable, index) {
+      super(mRenderable, index)
+    }
+  }
+
   export default Animation;
-  
