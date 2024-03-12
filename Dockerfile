@@ -23,10 +23,10 @@ USER node
 RUN npm install
 
 # copy project application code
-COPY --chown=node:node . .
+COPY . .
 
 # expose port 8080 for access
-EXPOSE 8080
+EXPOSE 3000
 
 # run the application using the node command
 CMD [ "node", "server.js" ]
