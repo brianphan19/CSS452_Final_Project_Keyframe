@@ -49,7 +49,7 @@ class MyGame extends engine.Scene {
         this.mRenderComponent.setColor([1, 1, 1, 0]); //Set color with transparency
         this.mRenderComponent.setElementPixelPositions(0, 184, 204, 348); // Set texture coordinates
         this.mRenderComponent.getXform().setSize(30, 24); // Set size of the renderable
-        this.mRenderComponent.getXform().setPosition(10, 10); // Set initial position
+        this.mRenderComponent.getXform().setPosition(-15, -10); // Set initial position
         this.mRenderComponent.setSpriteSequence(512, 0,
                                                 204, 164,
                                                 5,
@@ -67,6 +67,7 @@ class MyGame extends engine.Scene {
         // create new animation
         this.mKeyFramer.newAnimation(this.mRenderComponent);
 
+
         this.frameIndex = 0;
         this.animationIndex = 0;
 
@@ -82,6 +83,16 @@ class MyGame extends engine.Scene {
         this.mMsg2.setColor([1, 1, 1, 1]);
         this.mMsg2.getXform().setPosition(-25,-15);
         this.mMsg2.setTextHeight(3);
+
+        this.mKeyFramer.getActiveAnimation(this.activeBox).addFrame(this.activeBox, this.frameIndex++);
+        this.mRenderComponent.getXform().setPosition(75, -10);
+        this.mKeyFramer.getActiveAnimation(this.activeBox).addFrame(this.activeBox, this.frameIndex++);
+        this.mRenderComponent.getXform().setPosition(75, 60);
+        this.mKeyFramer.getActiveAnimation(this.activeBox).addFrame(this.activeBox, this.frameIndex++);
+        this.mRenderComponent.getXform().setPosition(-15, 60);
+        this.mKeyFramer.getActiveAnimation(this.activeBox).addFrame(this.activeBox, this.frameIndex++);
+        this.mRenderComponent.getXform().setPosition(-15, -10);
+        this.mKeyFramer.getActiveAnimation(this.activeBox).addFrame(this.activeBox, this.frameIndex++);
 
     }
 
