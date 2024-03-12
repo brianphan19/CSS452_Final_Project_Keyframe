@@ -45,11 +45,17 @@ class Animation {
         this.lastFrame = newFrame;
         return true;
       }
-      
-      
+
       //if user add frame without index, the default will be add frame with index right after the last frame
       if (index === null) {
         timeIndex = this.lastFrame.frameIndex + 60;
+      }
+      
+      //if user add frame before first frame
+      if (this.firstFrame.frameIndex > timeIndex) {
+        newFrame.next = this.firstFrame;
+        this.firstFrame = newFrame;
+        return;
       }
       
       let prevFrame = this.getFrameBeforeIndex(timeIndex);
@@ -109,7 +115,7 @@ class Animation {
      */
     getFrameBeforeIndex(index) {
       let currFrame = this.firstFrame;
-      let prevFrame = currFrame;
+      let prevFrame = this.firstFrame;
   
       while (currFrame !== null) {
         if (currFrame.frameIndex >= index) break;

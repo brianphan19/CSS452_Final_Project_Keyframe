@@ -259,12 +259,6 @@ S
         this.mMsg2.setText("Current Box: "  + this.activeBoxName + "  Animation (" + (this.mKeyFramer.getActiveAnimationIndex(this.activeBox) + 1) + "/" + this.mKeyFramer.getNumberOfAnimations(this.activeBox) + ") Array[" + this.getAnimationFramesArray(this.activeBox) + "]");
     }
 
-    vectorToFixed(vector, decimal) {
-       let result = [];
-       for (let value of vector) result.push(value.toFixed(decimal));
-       return result;
-    }
-
     getAnimationFramesArray(renderable) {
         let animation = this.mKeyFramer.getActiveAnimation(renderable);
         let retVal = [];
