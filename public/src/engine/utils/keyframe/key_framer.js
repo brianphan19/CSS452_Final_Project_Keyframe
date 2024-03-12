@@ -114,7 +114,7 @@ class KeyFramer {
     // Other safety check here? Ensure renderable is renderable
 
     // Create a new animation
-    let toAdd = new Animation(mRenderable);
+    let toAdd = new Animation();
 
     // Add the new animation to the list
     this.renderableMap.get(mRenderable).addAnimation(toAdd);

@@ -13,9 +13,11 @@ class AnimationPlayer {
     // should the animation be playing
     this.isPlaying = false;
 
-    //global variables used during liner interpolation
-    this.currentTick;
-    this.currentFrame;
+    // exact frame, based off fps
+    this.currentTick; 
+    // prev key frame time
+    this.currentFrame; 
+    // next key frame time
     this.nextFrame;
 
     // list of all frames in the animation
@@ -37,18 +39,21 @@ class AnimationPlayer {
     if (!this.isPlaying ) return;
     // if the player does not have any frames
     if (this.animation.isEmpty()) return;
-    //if the player reach last frame
+    // stop at final frame
     if (this.currentFrame.next === null) return this.pause();
 
     this.currentTick++;
-    let dt = (this.currentTick - this.currentFrame.frameIndex) / (this.nextFrame.frameIndex - this.currentFrame.frameIndex) ;
+    // dt is a float from 0 to 1, representing how far between key frames we are
+    let dt = (this.currentTick - this.currentFrame.frameIndex) / 
+    (this.nextFrame.frameIndex - this.currentFrame.frameIndex) ;
 
-    //update during transition
+    // update each parameter based on how much between key frames we are 
     this.updatePlacementLinear(dt);
     this.updateSizeLinear(dt);
     this.updateRotationLinear(dt);
     this.updateColorLinear(dt);
 
+    // increase key frame when current exact frame >= next key frame
     if (this.currentTick >= this.nextFrame.frameIndex){
       this.currentFrame = this.nextFrame;
       this.nextFrame = this.currentFrame.next;
@@ -69,7 +74,8 @@ class AnimationPlayer {
     const dx = nextFrameX  - currentFrameX;
     const dy = nextFrameY - currentFrameY;
     
-    // if (dx == 0 && dy == 0) return;
+    // no change between frames
+    if (dx == 0 && dy == 0) return;
 
     const newXPos = currentFrameX + dx * dt;
     const newYPos = currentFrameY + dy * dt;
@@ -92,9 +98,8 @@ class AnimationPlayer {
     const dw = nextFrameWidth - currentFrameWidth;
     const dh = nextFrameHeight - currentFrameHeight;
 
-    // if (dw == 0 && dh == 0) {
-    //   return; // No change in size
-    // }
+    // no change between frames
+    if (dw == 0 && dh == 0) return; 
 
     const newWidth = currentFrameWidth + dw * dt;
     const newHeight = currentFrameHeight + dh * dt;
@@ -112,10 +117,9 @@ class AnimationPlayer {
       const nextRotation = this.nextFrame.getRotationInDegree();
 
       const dr = nextRotation - currentRotation;
-
-      // if (dr == 0) {
-      //     return; // No change in rotation
-      // }
+      
+      // no change between frames
+      if (dr == 0) return;
 
       const newRotation = currentRotation + dr * dt;
 
@@ -141,10 +145,9 @@ class AnimationPlayer {
     const dG = nextG - currentG;
     const dB = nextB - currentB;
     const dA = nextA - currentA;
-
-    // if (dR == 0 && dG == 0 && dB == 0) {
-    //   return; // No change in color
-    // }
+    
+    // no change between frames
+    if (dR == 0 && dG == 0 && dB == 0 && dA == 0) return; 
 
     const newR = currentR + dR * dt;
     const newG = currentG + dG * dt;
