@@ -12,11 +12,27 @@ class MyGame extends engine.Scene {
         // a simple box to test with
         this.mBox1;
 
+        // more complex example of animated sprite
+        this.mRenderComponent
+
+        // sheet for mRenderComponent
+        this.kMinionSprite = "assets/SpriteSheet.png";
+
         // declaration of keyframer reference
         this.mKeyFramer;
         this.mMsg = null;
     }
-        
+
+    // texture load
+    load() {
+        engine.texture.load(this.kMinionSprite);
+    }
+
+    // texture unload
+    unload() {
+        engine.texture.unload(this.kMinionSprite);
+    }
+
     init() {
         // Step A: set up the cameras
         this.mCamera = new engine.Camera(
@@ -66,6 +82,22 @@ class MyGame extends engine.Scene {
         this.mMsg2.setColor([1, 1, 1, 1]);
         this.mMsg2.getXform().setPosition(-25,-15);
         this.mMsg2.setTextHeight(3);
+
+        // working with more complex renderables
+        // initialization of renderable with animation
+        this.mRenderComponent = new engine.SpriteAnimateRenderable(this.kMinionSprite);
+        this.mRenderComponent.setColor([1, 1, 1, 0]); //Set color with transparency
+        this.mRenderComponent.setElementPixelPositions(0, 184, 204, 348); // Set texture coordinates
+        this.mRenderComponent.getXform().setSize(10, 8); // Set size of the renderable
+        this.mRenderComponent.getXform().setPosition(10, 10); // Set initial position
+        this.mRenderComponent.setSpriteSequence(512, 0,
+                                                204, 164,
+                                                5,
+                                                0); // Set sprite sequence for animation
+
+        this.mRenderComponent.setAnimationType(engine.eAnimationType.eSwing); // Set animation type
+        this.mRenderComponent.setAnimationSpeed(10); // Set animation speed
+
     }
     
     // This is the draw function, make sure to setup proper drawing environment, and more
@@ -80,6 +112,8 @@ class MyGame extends engine.Scene {
 
         this.mBox1.draw(this.mCamera);
         this.mBox2.draw(this.mCamera);
+
+        this.mRenderComponent.draw(this.mCamera);
     }
     
     // The Update function, updates the application state. Make sure to _NOT_ draw
@@ -89,6 +123,8 @@ class MyGame extends engine.Scene {
         //add frame
         this.addNewFrame();
         this.deleteFrame(this.frameIndex - 1);
+
+        this.mRenderComponent.updateAnimation();
 
         // movement
         this.objectChange();
@@ -111,7 +147,9 @@ class MyGame extends engine.Scene {
 
         this.resetAnimation();
     }
-    
+
+    spawn(){
+    }
     objectChange() {
         this.objectMovement(); 
         this.changeActiveBox();
