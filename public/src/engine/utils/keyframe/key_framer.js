@@ -140,7 +140,7 @@ class KeyFramer {
    */
   play() {
     for (let database of this.renderableMap.values()) {
-      database.playAnimation();
+      database.playAnimation(false);
     }
   }
 
@@ -149,9 +149,9 @@ class KeyFramer {
    * Loop for as long a isLooping is true
    * @returns {void}
    */
-  playLoooping() {
+  playLooping() {
     for (let database of this.renderableMap.values()) {
-      database.playAnimation();
+      database.playAnimation(true);
     }
   }
 

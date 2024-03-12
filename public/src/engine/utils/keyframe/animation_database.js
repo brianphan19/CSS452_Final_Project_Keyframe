@@ -75,9 +75,9 @@ class AnimationDatabase {
     /**
      * Play the animation at the current index.
      */
-    playAnimation() {
+    playAnimation(isLooping) {
         // Start playing the active animation using the AnimationPlayer
-        this.player.start(this.animationStorage[this.activeAnimationIndex]);
+        this.player.start(this.animationStorage[this.activeAnimationIndex], isLooping);
     }
 
     /**

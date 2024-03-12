@@ -25,6 +25,9 @@ class AnimationPlayer {
     // list of all frames in the animation
     this.animation = null;
 
+    // tells us to replay the animation
+    this.isLooping = false;
+
     this.renderable = mRenderable;
   }
 
@@ -42,7 +45,16 @@ class AnimationPlayer {
     // if the player does not have any frames
     if (this.animation.isEmpty()) return;
     // stop at final frame
-    if (this.currentFrame.next === null) return this.pause();
+    if (this.currentFrame.next === null) {
+      // if the animation is looping go back to first frame
+      if (this.isLooping) {
+        this.start(this.animation, this.isLooping)
+
+        // else stop playing
+      } else {
+        return this.pause();
+      }
+    }
 
     this.currentTick++;
     // dt is a float from 0 to 1, representing how far between key frames we are
@@ -193,14 +205,16 @@ class AnimationPlayer {
    */
   pause(){
     this.isPlaying = false;
+    this.isLooping = false;
   }
 
   /**
    * Start the animation playback with the given animation.
    * @param {object} animation - The animation to be played.
    */
-  start(animation){
+  start(animation, isLooping){
     this.animation = animation;
+    this.isLooping = isLooping;
     if(this.animation.isEmpty()) return;
 
     this.isPlaying = true;
