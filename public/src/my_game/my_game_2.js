@@ -9,12 +9,25 @@ class MyGame extends engine.Scene {
         // The camera to view the scene
         this.mCamera = null;
 
-        // a simple box to test with
-        this.mBox1;
+        // more complex example of animated sprite
+        this.mRenderComponent
+
+        // sheet for mRenderComponent
+        this.kMinionSprite = "assets/SpriteSheet.png";
 
         // declaration of keyframer reference
         this.mKeyFramer;
         this.mMsg = null;
+    }
+
+    // texture load
+    load() {
+        engine.texture.load(this.kMinionSprite);
+    }
+
+    // texture unload
+    unload() {
+        engine.texture.unload(this.kMinionSprite);
     }
 
     init() {
@@ -28,34 +41,37 @@ class MyGame extends engine.Scene {
         // sets the background to gray
         this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
 
-        // initialization of simple box
-        this.mBox1 = new engine.Renderable();
-        this.mBox1.setColor([1,0,1,1]);
-        this.mBox1.getXform().setSize(5,5);
-        this.mBox1.getXform().setPosition(0, 0);
-
-        this.mBox2 = new engine.Renderable();
-        this.mBox2.setColor([1,1,0,1]);
-        this.mBox2.getXform().setSize(5,5);
-        this.mBox2.getXform().setPosition(0, 7);
-
-        this.activeBox = this.mBox1;
-        this.activeBoxName = "Box 1";
-
         this.moveSpeed = 1;
+
+        // working with more complex renderables
+        // initialization of renderable with animation
+        this.mRenderComponent = new engine.SpriteAnimateRenderable(this.kMinionSprite);
+        this.mRenderComponent.setColor([1, 1, 1, 0]); //Set color with transparency
+        this.mRenderComponent.setElementPixelPositions(0, 184, 204, 348); // Set texture coordinates
+        this.mRenderComponent.getXform().setSize(10, 8); // Set size of the renderable
+        this.mRenderComponent.getXform().setPosition(10, 10); // Set initial position
+        this.mRenderComponent.setSpriteSequence(512, 0,
+                                                204, 164,
+                                                5,
+                                                0); // Set sprite sequence for animation
+
+        this.mRenderComponent.setAnimationType(engine.eAnimationType.eSwing); // Set animation type
+        this.mRenderComponent.setAnimationSpeed(10); // Set animation speed
 
         // initialization of keyframer object
         this.mKeyFramer = new engine.KeyFramer();
 
         // add renderable to KeyFramer map
-        this.mKeyFramer.setRenderable(this.mBox1);
-        this.mKeyFramer.setRenderable(this.mBox2);
+        this.mKeyFramer.setRenderable(this.mRenderComponent);
 
         // create new animation
-        this.mKeyFramer.newAnimation(this.mBox1);
-        this.mKeyFramer.newAnimation(this.mBox2);
+        this.mKeyFramer.newAnimation(this.mRenderComponent);
+
         this.frameIndex = 0;
         this.animationIndex = 0;
+
+        this.activeBox = this.mRenderComponent;
+        this.activeBoxName = "Box 1";
 
         this.mMsg1 = new engine.FontRenderable("Next Frame Index(" + this.frameIndex + ")  Animation index(" + this.animationIndex + ")" );
         this.mMsg1.setColor([1, 1, 1, 1]);
@@ -66,8 +82,9 @@ class MyGame extends engine.Scene {
         this.mMsg2.setColor([1, 1, 1, 1]);
         this.mMsg2.getXform().setPosition(-25,-15);
         this.mMsg2.setTextHeight(3);
+
     }
-    
+
     // This is the draw function, make sure to setup proper drawing environment, and more
     // importantly, make sure to _NOT_ change any state.
     draw() {
@@ -75,13 +92,9 @@ class MyGame extends engine.Scene {
         engine.clearCanvas([0.9, 0.9, 0.9, 1.0]); // clear to light gray
         this.mCamera.setViewAndCameraMatrix();
 
-        this.mMsg1.draw(this.mCamera);
-        this.mMsg2.draw(this.mCamera);
-
-        this.mBox1.draw(this.mCamera);
-        this.mBox2.draw(this.mCamera);
+        this.mRenderComponent.draw(this.mCamera);
     }
-    
+
     // The Update function, updates the application state. Make sure to _NOT_ draw
     // anything from this function!
     update () {
@@ -89,6 +102,8 @@ class MyGame extends engine.Scene {
         //add frame
         this.addNewFrame();
         this.deleteFrame(this.frameIndex - 1);
+
+        this.mRenderComponent.updateAnimation();
 
         // movement
         this.objectChange();
@@ -113,7 +128,7 @@ class MyGame extends engine.Scene {
     }
 
    objectChange() {
-        this.objectMovement(); 
+        this.objectMovement();
         this.changeActiveBox();
 
         let delta = 1;
@@ -172,7 +187,7 @@ class MyGame extends engine.Scene {
         if (engine.input.isKeyPressed(engine.input.keys.O)) {
             this.activeBox.getXform().incSizeBy(deltaSize);
         }
-       
+
     }
 
     //Function to change object rotation
@@ -182,7 +197,7 @@ class MyGame extends engine.Scene {
         }
     }
 
-    changeObjectColor(delta) { 
+    changeObjectColor(delta) {
         let color = this.activeBox.getColor();
         let keyPressed = false;
 
@@ -217,14 +232,6 @@ class MyGame extends engine.Scene {
 
     changeActiveBox() {
         if(engine.input.isKeyClicked(engine.input.keys.Ctrl)) {
-            if (this.activeBox === this.mBox1) {
-                this.activeBox = this.mBox2;
-                this.activeBoxName = "Box 2"
-            }
-            else {
-                this.activeBox = this.mBox1;
-                this.activeBoxName = "Box 1`"
-            }
         }
     }
 S
@@ -239,7 +246,7 @@ S
             this.mKeyFramer.getActiveAnimation(this.activeBox).addFrame(this.activeBox, this.frameIndex++);
         }
     }
-    
+
     deleteFrame(index = null) {
         if (engine.input.isKeyClicked(engine.input.keys.E)) {
             this.mKeyFramer.getActiveAnimation(this.activeBox).deleteFrame(index);
