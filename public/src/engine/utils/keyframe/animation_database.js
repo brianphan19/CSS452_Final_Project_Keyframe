@@ -10,6 +10,10 @@ class AnimationDatabase {
         this.animationStorage = [];
         // Index of the current animation being played
         this.activeAnimationIndex = 0;
+
+        //interpolation data
+        this.interpolationFunc = null;
+        this.interpolationParam = null;
     }
 
     /**
@@ -23,6 +27,16 @@ class AnimationDatabase {
             return;
         }
         this.activeAnimationIndex = index;
+    }
+
+    /**
+     * set the interpolation related data when play animation
+     * @param {Array} param - array of param needed for provided function 
+     * @param {Function} func - provided fnction for interpolation between frames
+     */
+    setInterpolation(param, func) {
+        this.interpolationFunc = func;
+        this.interpolationParam = param;
     }
 
     /**
@@ -86,6 +100,13 @@ class AnimationDatabase {
      */
     hasAnimation() {
         return this.animationStorage.length !== 0;
+    }
+
+    /**
+     * Update player.
+     */
+    playerUpdate() {
+        this.player.update(this.interpolationParam, this.interpolationFunc);
     }
 }
 

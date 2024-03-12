@@ -105,6 +105,23 @@ class KeyFramer {
   }
 
   /**
+     * set the interpolation related data when play animation
+     * 
+     * @param {object} mRenderable - The renderable object
+     * @param {Array} param - array of param needed for provided function 
+     * @param {Function} func - provided fnction for interpolation between frames
+     */
+  setInterpolation(mRenderable, param, func) {
+    // Check if renderable is null
+    if (mRenderable === null) return;
+
+    // Check if map already has renderable
+    if (!this.renderableMap.has(mRenderable)) return;
+
+    this.renderableMap.get(mRenderable).setInterpolation(param, func)
+  }
+
+  /**
    * Create a new animation and add it to the renderable map.
    * @param {object} mRenderable - The renderable object for which the animation is created.
    * @returns {Animation|null} - The newly created animation, or null if renderable is null.
@@ -133,7 +150,7 @@ class KeyFramer {
    */
   update() {
     for (let database of this.renderableMap.values()) {
-      database.player.update();
+      database.playerUpdate();
     }
   }
 
