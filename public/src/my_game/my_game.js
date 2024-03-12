@@ -1,8 +1,6 @@
 "use strict";  // Operate in Strict mode such that variables must be declared before used!
 
 import engine from "../engine/index.js";
-import Renderable from "../engine/renderables/renderable.js";
-
 
 class MyGame extends engine.Scene {
     constructor() {
@@ -31,12 +29,12 @@ class MyGame extends engine.Scene {
         this.mCamera.setBackgroundColor([0.8, 0.8, 0.8, 1]);
 
         // initialization of simple box
-        this.mBox1 = new Renderable();
+        this.mBox1 = new engine.Renderable();
         this.mBox1.setColor([1,0,1,1]);
         this.mBox1.getXform().setSize(5,5);
         this.mBox1.getXform().setPosition(0, 0);
 
-        this.mBox2 = new Renderable();
+        this.mBox2 = new engine.Renderable();
         this.mBox2.setColor([1,1,0,1]);
         this.mBox2.getXform().setSize(5,5);
         this.mBox2.getXform().setPosition(0, 7);

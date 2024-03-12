@@ -4,9 +4,8 @@
 class Animation {
     /**
      * Create an Animation.
-     * @param {object} mRenderable - The renderable object associated with this animation.
      */
-    constructor(mRenderable) {
+    constructor() {
       // Initialize animation properties
       this.firstFrame = null;
       this.lastFrame = null;
@@ -116,7 +115,7 @@ class Animation {
     /**
      * Create a Frame.
      * @param {object} mRenderable - The renderable object associated with this frame.
-     * @param {number} index - The index of the frame (in seconds).
+     * @param {number} index - The index of the frame (by framerate: 1sec = 60).
      */
     constructor(mRenderable, index) {
       // Initialize frame properties
